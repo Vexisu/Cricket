@@ -1,7 +1,5 @@
-﻿namespace Cricket.Interpreter.Scanner
+﻿namespace Cricket.Interpreter.Scanner;
+
+public enum TokenType
 {
-    public enum TokenType
-    {
-        
-    }
 }

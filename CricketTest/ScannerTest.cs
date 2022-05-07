@@ -7,7 +7,7 @@ public class Tests
 {
     private Scanner _scanner;
     private string[] _testSource;
-    
+
     [SetUp]
     public void Setup()
     {

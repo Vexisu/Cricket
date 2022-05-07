@@ -1,43 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Cricket.Interpreter.Scanner
+namespace Cricket.Interpreter.Scanner;
+
+public class Scanner
 {
-    public class Scanner
+    private readonly string[] _source;
+    private int index, line;
+
+    public Scanner(string[] source)
     {
-        private string[] _source;
-        private int index = 0, line = 0;
+        _source = source;
+    }
 
-        public Scanner(string[] source)
+    public List<Token> Tokenize()
+    {
+        var tokens = new List<Token>();
+        while (!EndOfFile())
         {
-            _source = source;
+            var current = Consume();
         }
 
-        public List<Token> Tokenize()
+        return null;
+    }
+
+    private char Consume()
+    {
+        var character = _source[line][index];
+        if (_source[line].Length == ++index)
         {
-            var tokens = new List<Token>();
-            while (!EndOfFile())
-            {
-                var current = Consume();
-                
-            }
-            return null;
+            index = 0;
+            line++;
         }
 
-        private char Consume()
-        {
-            var character = _source[line][index];
-            if (_source[line].Length == ++index)
-            {
-                index = 0;
-                line++;
-            }
-            return character;
-        }
+        return character;
+    }
 
-        private bool EndOfFile()
-        {
-            return line == _source.Length;
-        }
+    private bool EndOfFile()
+    {
+        return line == _source.Length;
     }
 }
