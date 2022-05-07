@@ -2,5 +2,5 @@
 
 public interface IStatement
 {
-    
+    public void Interpreter();
 }
