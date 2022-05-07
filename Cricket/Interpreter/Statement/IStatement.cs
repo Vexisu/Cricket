@@ -1,7 +1,6 @@
-﻿namespace Cricket.Interpreter.Statement
+﻿namespace Cricket.Interpreter.Statement;
+
+public interface IStatement
 {
-    public interface IStatement
-    {
-        
-    }
+    
 }
