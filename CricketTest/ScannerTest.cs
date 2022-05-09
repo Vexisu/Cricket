@@ -1,3 +1,5 @@
+using System;
+using Cricket.Interpreter;
 using Cricket.Interpreter.Scanner;
 using NUnit.Framework;
 
@@ -5,8 +7,8 @@ namespace CricketTest;
 
 public class Tests
 {
-    private Scanner _scanner;
-    private string[] _testSource;
+    private Scanner? _scanner;
+    private string[]? _testSource;
 
     [SetUp]
     public void Setup()
@@ -18,7 +20,14 @@ public class Tests
     [Test]
     public void TokenizerTest()
     {
-        _scanner.Tokenize();
+        try
+        {
+            _scanner?.Tokenize();
+        }
+        catch (Exception e)
+        {
+            Interpreter.HandleException(e);
+        }
         Assert.Pass();
     }
 }
