@@ -40,7 +40,7 @@ public class Scanner
             }
         }
 
-        return null;
+        return tokens;
     }
 
     private char Consume()
