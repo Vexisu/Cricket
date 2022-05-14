@@ -33,6 +33,10 @@ public class Interpreter
         {
             HandleUnexpectedSyntaxError(error);
         }
+        else
+        {
+            Console.Out.WriteLine(exception.Message);
+        }
     }
 
     private static void HandleUnexpectedSyntaxError(UnexpectedSyntaxError error)

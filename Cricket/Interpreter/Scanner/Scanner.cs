@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Cricket.Interpreter.Error;
+using static System.String;
 
 namespace Cricket.Interpreter.Scanner;
 
@@ -19,8 +21,16 @@ public class Scanner
         while (!EndOfFile())
         {
             var current = Consume();
+            if (IsDigit(current))
+            {
+                tokens.Add(new Token(TokenType.NUMERIC, ConsumeNumeric(current), _line));
+                continue;
+            }
+
             switch (current)
             {
+                case ' ':
+                    break;
                 case '+':
                     tokens.Add(new Token(TokenType.PLUS, current.ToString(), _line));
                     break;
@@ -45,18 +55,44 @@ public class Scanner
 
     private char Consume()
     {
-        var character = _source[_line][_index];
-        if (_source[_line].Length == ++_index)
+        if (_source[_line].Length == _index)
         {
             _index = 0;
             _line++;
         }
-
+        var character = _source[_line][_index];
+        _index++;
         return character;
+    }
+
+    private string ConsumeNumeric(char current)
+    {
+        var numeric = current.ToString();
+        while (!EndOfFile())
+        {
+            if (!IsDigit(Peek()))
+            {
+                break;
+            }
+
+            numeric += Consume();
+        }
+
+        return numeric;
+    }
+
+    private static bool IsDigit(char character)
+    {
+        return character is >= '0' and <= '9';
+    }
+
+    private char Peek()
+    {
+        return _source[_line][_index];
     }
 
     private bool EndOfFile()
     {
-        return _line == _source.Length;
+        return _line == _source.Length - 1 && _index == _source[_line].Length;
     }
 }
