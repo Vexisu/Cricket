@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Cricket.Interpreter.Error;
-using static System.String;
 
 namespace Cricket.Interpreter.Scanner;
 
@@ -23,7 +21,7 @@ public class Scanner
             var current = Consume();
             if (IsDigit(current))
             {
-                tokens.Add(new Token(TokenType.NUMERIC, ConsumeNumeric(current), _line));
+                tokens.Add(new Token(TokenType.Numeric, ConsumeNumeric(current), _line));
                 continue;
             }
 
@@ -32,16 +30,16 @@ public class Scanner
                 case ' ':
                     break;
                 case '+':
-                    tokens.Add(new Token(TokenType.PLUS, current.ToString(), _line));
+                    tokens.Add(new Token(TokenType.Plus, current.ToString(), _line));
                     break;
                 case '-':
-                    tokens.Add(new Token(TokenType.MINUS, current.ToString(), _line));
+                    tokens.Add(new Token(TokenType.Minus, current.ToString(), _line));
                     break;
                 case '*':
-                    tokens.Add(new Token(TokenType.ASTERISK, current.ToString(), _line));
+                    tokens.Add(new Token(TokenType.Asterisk, current.ToString(), _line));
                     break;
                 case '/':
-                    tokens.Add(new Token(TokenType.SLASH, current.ToString(), _line));
+                    tokens.Add(new Token(TokenType.Slash, current.ToString(), _line));
                     break;
                 default:
                     throw (_index != 0

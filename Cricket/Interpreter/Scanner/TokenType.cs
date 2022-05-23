@@ -2,5 +2,5 @@
 
 public enum TokenType
 {
-    PLUS, MINUS, ASTERISK, SLASH, IDENTIFIER, STRING, NUMERIC
+    Plus, Minus, Asterisk, Slash, Identifier, String, Numeric
 }
