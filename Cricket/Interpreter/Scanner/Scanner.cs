@@ -34,6 +34,15 @@ public class Scanner {
                 case '/':
                     tokens.Add(new Token(TokenType.Slash, current.ToString(), _line));
                     break;
+                case ';':
+                    tokens.Add(new Token(TokenType.Semicolon, current.ToString(), _line));
+                    break;
+                case '(':
+                    tokens.Add(new Token(TokenType.LeftParenthesis, current.ToString(), _line));
+                    break;
+                case ')':
+                    tokens.Add(new Token(TokenType.RightParenthesis, current.ToString(), _line));
+                    break;
                 default:
                     throw _index != 0
                         ? new UnexpectedSyntaxError(_source[_line], _line, _index)

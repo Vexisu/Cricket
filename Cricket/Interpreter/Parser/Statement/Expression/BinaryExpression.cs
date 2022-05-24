@@ -1,3 +1,5 @@
+using System;
+
 namespace Cricket.Interpreter.Parser.Statement.Expression;
 
 public class BinaryExpression : IExpression {
@@ -18,6 +20,17 @@ public class BinaryExpression : IExpression {
     }
 
     public object Interpreter() {
-        return null;
+        switch (_type) {
+            case ExpressionType.Addition:
+                return (int) _left.Interpreter() + (int) _right.Interpreter();
+            case ExpressionType.Subtraction:
+                return (int) _left.Interpreter() - (int) _right.Interpreter();
+            case ExpressionType.Multiplication:
+                return (int) _left.Interpreter() * (int) _right.Interpreter();
+            case ExpressionType.Division:
+                return (int) _left.Interpreter() / (int) _right.Interpreter();
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 }

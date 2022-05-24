@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Cricket.Interpreter.Parser.Statement;
 using Cricket.Interpreter.Parser.Statement.Expression;
@@ -15,12 +16,66 @@ public class Parser {
 
     public List<IStatement> Parse() {
         var statements = new List<IStatement>();
-        while (!EndOfFile()) { }
+        while (!EndOfFile()) {
+            statements.Add(ParseExpression());
+        }
         return statements;
     }
 
-    private IExpression ParseExpression(List<Token> current) {
+    private IExpression ParseExpression() {
+        if (Match(Peek(), TokenType.Numeric)) {
+            var expression = ParseTerm();
+            Consume();
+            return expression;
+        }
         return null;
+    }
+
+    private IExpression ParseTerm() {
+        IExpression expression = ParseFactor();
+        while (Match(Peek(), TokenType.Plus, TokenType.Minus)) {
+            switch (Peek().Type) {
+                case TokenType.Plus:
+                    Consume();
+                    expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Addition,
+                        ParseFactor());
+                    break;
+                case TokenType.Minus:
+                    Consume();
+                    expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Subtraction,
+                        ParseFactor());
+                    break;
+            }
+        }
+        return expression;
+    }
+
+    private IExpression ParseFactor() {
+        IExpression expression = ParseValue();
+        while (Match(Peek(), TokenType.Asterisk, TokenType.Slash)) {
+            switch (Peek().Type) {
+                case TokenType.Asterisk:
+                    Consume();
+                    expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Multiplication,
+                        ParseValue());
+                    break;
+                case TokenType.Slash:
+                    Consume();
+                    expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Division,
+                        ParseValue());
+                    break;
+            }
+        }
+        return expression;
+    }
+
+    private IExpression ParseParenthesis() {
+        return null;
+    }
+
+    private IExpression ParseValue() {
+        var current = Consume();
+        return new ValueExpression(Int32.Parse(current.Lexeme), ValueExpression.ValueType.Numeric);
     }
 
     private bool Match(Token token, params TokenType[] tokenTypes) {
@@ -30,7 +85,8 @@ public class Parser {
         return false;
     }
 
-    private Token Peek(int i) {
+    private Token Peek(int i = 1) {
+        i--;
         return _index + i < _tokens.Count ? _tokens[_index + i] : null;
     }
 
@@ -39,10 +95,10 @@ public class Parser {
     }
 
     private Token Consume() {
-        return EndOfFile() ? _tokens[_index++] : null;
+        return !EndOfFile() ? _tokens[_index++] : null;
     }
 
     private bool EndOfFile() {
-        return _index < _tokens.Count;
+        return _index >= _tokens.Count;
     }
 }

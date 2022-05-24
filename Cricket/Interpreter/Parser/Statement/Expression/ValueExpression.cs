@@ -8,7 +8,7 @@ public class ValueExpression : IExpression {
     }
 
     private readonly object _value;
-    private ValueType _valueType;
+    public ValueType _valueType { get; }
 
     public ValueExpression(object value, ValueType valueType) {
         _value = value;
