@@ -1,6 +1,3 @@
 namespace Cricket.Interpreter;
 
-public class Environment
-{
-    
-}
+public class Environment { }

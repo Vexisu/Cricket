@@ -7,32 +7,24 @@ using NUnit.Framework;
 
 namespace CricketTest;
 
-public class Tests
-{
+public class Tests {
     [Test]
-    public void MathExprTest()
-    {
+    public void MathExprTest() {
         var scanner = new Scanner(new[] {"2 + 2 / 1012 * 31"});
         List<Token>? tokens = null;
-        try
-        {
+        try {
             tokens = scanner.Tokenize();
-            foreach (var token in tokens)
-            {
-                Console.Out.WriteLine($@"{token.Line}: {token.Type} {token.Lexeme}");
-            }
+            foreach (var token in tokens) Console.Out.WriteLine($@"{token.Line}: {token.Type} {token.Lexeme}");
         }
-        catch (UnexpectedSyntaxError e)
-        {
+        catch (UnexpectedSyntaxError e) {
             Interpreter.HandleException(e);
             Assert.Fail();
         }
 
-        Assert.AreEqual(new List<Token>()
-            {
-                new(TokenType.Numeric, "2", 0), new(TokenType.Plus, "+", 0), new(TokenType.Numeric, "2", 0),
-                new(TokenType.Slash, "/", 0), new(TokenType.Numeric, "1012", 0),
-                new(TokenType.Asterisk, "*", 0), new(TokenType.Numeric, "31", 0)
-            }, tokens);
+        Assert.AreEqual(new List<Token> {
+            new(TokenType.Numeric, "2", 0), new(TokenType.Plus, "+", 0), new(TokenType.Numeric, "2", 0),
+            new(TokenType.Slash, "/", 0), new(TokenType.Numeric, "1012", 0),
+            new(TokenType.Asterisk, "*", 0), new(TokenType.Numeric, "31", 0)
+        }, tokens);
     }
 }
