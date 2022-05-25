@@ -10,7 +10,7 @@ public class ParserTest {
     [Test]
     public void TestValue() {
         try {
-            var scanner = new Scanner(new[] {"(5*(2+3*4));"});
+            var scanner = new Scanner(new[] {"(5*(2+3*5*4));"});
             var parser = new Parser(scanner.Tokenize());
             var statements = parser.Parse();
             var output = statements[0].Interpreter();

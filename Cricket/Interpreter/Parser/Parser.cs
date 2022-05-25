@@ -95,7 +95,16 @@ public class Parser {
 
     private IExpression ParseValue() {
         var current = Consume();
-        return new ValueExpression(Int32.Parse(current.Lexeme), ValueExpression.ValueType.Numeric);
+        switch (current.Type) {
+            case TokenType.Numeric:
+                return new ValueExpression(Int32.Parse(current.Lexeme), ValueExpression.ValueType.Numeric);
+            case TokenType.Identifier:
+                return new ValueExpression(current.Lexeme, ValueExpression.ValueType.Identifier);
+            case TokenType.String:
+                return new ValueExpression(current.Lexeme, ValueExpression.ValueType.String);
+            default:
+                throw new UnexpectedSyntaxError(current.Line, current.Lexeme, "Value");
+        }
     }
 
     private bool Match(Token token, params TokenType[] tokenTypes) {
