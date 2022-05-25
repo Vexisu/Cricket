@@ -45,8 +45,8 @@ public class Scanner {
                     break;
                 default:
                     throw _index != 0
-                        ? new UnexpectedSyntaxError(_source[_line], _line, _index)
-                        : new UnexpectedSyntaxError(_source[_line - 1], _line - 1, _source[_line - 1].Length);
+                        ? new UnrecognizedSyntaxError(_source[_line], _line, _index)
+                        : new UnrecognizedSyntaxError(_source[_line - 1], _line - 1, _source[_line - 1].Length);
             }
         }
         return tokens;

@@ -15,7 +15,12 @@ public class Interpreter {
         try {
             var source = File.ReadAllLines(_path);
             var scanner = new Scanner.Scanner(source);
-            scanner.Tokenize();
+            var tokens = scanner.Tokenize();
+            var parser = new Parser.Parser(tokens);
+            var statements = parser.Parse();
+            foreach (var statement in statements) {
+                Console.Out.WriteLine(statement.Interpreter());
+            }
         }
         catch (Exception e) {
             HandleException(e);
@@ -23,13 +28,13 @@ public class Interpreter {
     }
 
     public static void HandleException(Exception exception) {
-        if (exception is UnexpectedSyntaxError error)
-            HandleUnexpectedSyntaxError(error);
+        if (exception is UnrecognizedSyntaxError error)
+            HandleUnrecognizedSyntaxError(error);
         else
             Console.Out.WriteLine(exception.Message);
     }
 
-    private static void HandleUnexpectedSyntaxError(UnexpectedSyntaxError error) {
+    private static void HandleUnrecognizedSyntaxError(UnrecognizedSyntaxError error) {
         Console.Out.WriteLine(error.Message);
         Console.Out.WriteLine($@"{error.Line + 1}:{error.Index}: {error.SourceCode}");
         Console.Out.WriteLine($@"{new string(' ', error.Line / 10 + error.Index / 10 + error.Index + 4)}^");

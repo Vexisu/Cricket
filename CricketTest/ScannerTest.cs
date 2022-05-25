@@ -16,7 +16,7 @@ public class Tests {
             tokens = scanner.Tokenize();
             foreach (var token in tokens) Console.Out.WriteLine($@"{token.Line}: {token.Type} {token.Lexeme}");
         }
-        catch (UnexpectedSyntaxError e) {
+        catch (UnrecognizedSyntaxError e) {
             Interpreter.HandleException(e);
             Assert.Fail();
         }
