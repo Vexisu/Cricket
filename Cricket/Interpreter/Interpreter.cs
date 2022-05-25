@@ -28,10 +28,22 @@ public class Interpreter {
     }
 
     public static void HandleException(Exception exception) {
-        if (exception is UnrecognizedSyntaxError error)
-            HandleUnrecognizedSyntaxError(error);
-        else
-            Console.Out.WriteLine(exception.Message);
+        switch (exception) {
+            case UnrecognizedSyntaxError error:
+                HandleUnrecognizedSyntaxError(error);
+                break;
+            case UnexpectedSyntaxError error:
+                HandleUnexpectedSyntaxError(error);
+                break;
+            default:
+                Console.Out.WriteLine(exception.Message);
+                break;
+        }
+    }
+
+    private static void HandleUnexpectedSyntaxError(UnexpectedSyntaxError error) {
+        Console.Out.WriteLine(error.Message);
+        Console.Out.Write($@"{error.Line + 1}: present: {error.Present}, expected {error.Expected}");
     }
 
     private static void HandleUnrecognizedSyntaxError(UnrecognizedSyntaxError error) {
