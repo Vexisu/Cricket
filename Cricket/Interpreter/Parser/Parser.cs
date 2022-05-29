@@ -19,13 +19,41 @@ public class Parser {
     public List<IStatement> Parse() {
         var statements = new List<IStatement>();
         while (!EndOfFile()) {
-            statements.Add(ParseExpression());
+            switch (Peek().Type)
+            {
+                case TokenType.Var:
+                    statements.Add(ParseVariableStatement());
+                    break;
+                default:
+                    statements.Add(ParseExpression());
+                    break;
+            }
         }
         return statements;
     }
 
+    // TODO: Add exception for syntax error.
+    // TODO: Add support for other types than integer.
+    private IStatement ParseVariableStatement()
+    {
+        Consume();
+        if (Peek().Type != TokenType.Identifier)
+        {
+            return null;
+        }
+
+        var variableName = Consume().Lexeme;
+        if (Consume().Type != TokenType.Equal)
+        {
+            return null;
+        }
+        
+        return new VariableStatement(variableName, DataType.Integer, ParseExpression());
+    }
+
+    // TODO: Move semicolon check to more appropriate place
     private IExpression ParseExpression() {
-        if (Match(Peek(), TokenType.Numeric, TokenType.LeftParenthesis)) {
+        if (Match(Peek(), TokenType.Integer, TokenType.Identifier, TokenType.LeftParenthesis)) {
             var expression = ParseTerm();
             if (Peek() != null && !Match(Peek(), TokenType.Semicolon)) {
                 throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, ";");
@@ -94,20 +122,26 @@ public class Parser {
     }
 
     private IExpression ParseValue() {
-        var current = Consume();
-        switch (current.Type) {
-            case TokenType.Numeric:
-                return new ValueExpression(Int32.Parse(current.Lexeme), ValueExpression.ValueType.Numeric);
+        switch (Peek().Type) {
+            case TokenType.Integer:
+                return new ValueExpression(Int32.Parse(Consume().Lexeme), DataType.Integer);
             case TokenType.Identifier:
-                return new ValueExpression(current.Lexeme, ValueExpression.ValueType.Identifier);
+                return ParseIdentifier();
             case TokenType.String:
-                return new ValueExpression(current.Lexeme, ValueExpression.ValueType.String);
+                return new ValueExpression(Consume().Lexeme, DataType.Float);
             default:
+                var current = Consume();
                 throw new UnexpectedSyntaxError(current.Line, current.Lexeme, "Value");
         }
     }
 
-    private bool Match(Token token, params TokenType[] tokenTypes) {
+    private IExpression ParseIdentifier()
+    {
+        var current = Consume();
+        return new VariableExpression(current.Lexeme);
+    }
+
+    private static bool Match(Token token, params TokenType[] tokenTypes) {
         return token != null && tokenTypes.Any(tokenType => token.Type == tokenType);
     }
 

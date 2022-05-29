@@ -3,20 +3,28 @@ using Cricket.Interpreter;
 using Cricket.Interpreter.Parser;
 using Cricket.Interpreter.Scanner;
 using NUnit.Framework;
+using Environment = Cricket.Interpreter.Environment.Environment;
 
-namespace CricketTest; 
+namespace CricketTest;
 
-public class ParserTest {
+public class ParserTest
+{
     [Test]
-    public void TestValue() {
-        try {
-            var scanner = new Scanner(new[] {"(5*(2+3*5*4));"});
+    public void TestValue()
+    {
+        try
+        {
+            Environment environment = new();
+            var scanner = new Scanner(new[] {"var x = 5 + 22; var y = 12 + x; x + y;"});
             var parser = new Parser(scanner.Tokenize());
             var statements = parser.Parse();
-            var output = statements[0].Interpreter();
-            Console.Out.WriteLine(output);
+            foreach (var statement in statements)
+            {
+                Console.Out.WriteLine(statement.Interpreter(environment));
+            }
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             Interpreter.HandleException(e);
         }
     }

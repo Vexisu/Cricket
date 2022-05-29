@@ -22,9 +22,9 @@ public class Tests {
         }
 
         Assert.AreEqual(new List<Token> {
-            new(TokenType.Numeric, "2", 0), new(TokenType.Plus, "+", 0), new(TokenType.Numeric, "2", 0),
-            new(TokenType.Slash, "/", 0), new(TokenType.Numeric, "1012", 0),
-            new(TokenType.Asterisk, "*", 0), new(TokenType.Numeric, "31", 0)
+            new(TokenType.Integer, "2", 0), new(TokenType.Plus, "+", 0), new(TokenType.Integer, "2", 0),
+            new(TokenType.Slash, "/", 0), new(TokenType.Integer, "1012", 0),
+            new(TokenType.Asterisk, "*", 0), new(TokenType.Integer, "31", 0)
         }, tokens);
     }
 }

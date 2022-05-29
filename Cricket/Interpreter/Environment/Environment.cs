@@ -1,35 +1,41 @@
 using System.Collections.Generic;
+using Cricket.Interpreter.Parser.Statement.Expression;
 
 namespace Cricket.Interpreter.Environment;
 
 public class Environment
 {
-    private Dictionary<string, VariableProperties> _variables;
+    private Dictionary<string, VariableWrapper> _variables;
 
     public Environment()
     {
-        _variables = new Dictionary<string, VariableProperties>();
+        _variables = new Dictionary<string, VariableWrapper>();
     }
 
-    public bool createVariable(string name, string type, object value)
+    public bool CreateVariable(string name, DataType dataType, IExpression expression)
     {
         if (_variables.ContainsKey(name))
         {
             return false;
         }
 
-        _variables.Add(name, new VariableProperties(value, type));
+        _variables.Add(name, new VariableWrapper(expression, dataType));
         return true;
     }
 
-    public bool updateVariable(string name, object value)
+    public bool UpdateVariable(string name, IExpression expression)
     {
         if (!_variables.ContainsKey(name))
         {
             return false;
         }
 
-        _variables[name].Value = value;
+        _variables[name].Expression = expression;
         return true;
+    }
+
+    public IExpression GetVariable(string name)
+    {
+        return _variables[name].Expression;
     }
 }

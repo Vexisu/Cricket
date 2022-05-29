@@ -1,9 +1,23 @@
-﻿namespace Cricket.Interpreter.Parser.Statement;
+﻿using Cricket.Interpreter.Parser.Statement.Expression;
+
+namespace Cricket.Interpreter.Parser.Statement;
 
 public class VariableStatement : IStatement
 {
-    public object Interpreter()
+    private readonly string _name;
+    private readonly DataType _type;
+    private readonly IExpression _expression;
+
+    public VariableStatement(string name, DataType type, IExpression expression)
     {
-        throw new System.NotImplementedException();
+        _name = name;
+        _type = type;
+        _expression = expression;
+    }
+
+    public object Interpreter(Environment.Environment environment)
+    {
+        environment.CreateVariable(_name, _type, _expression);
+        return null;
     }
 }

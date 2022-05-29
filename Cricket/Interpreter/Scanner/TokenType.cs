@@ -27,7 +27,8 @@ public enum TokenType {
     // Literals
     Identifier,
     String,
-    Numeric,
+    Integer,
+    Float,
 
     // Keywords
     Import,

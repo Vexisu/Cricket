@@ -1,47 +1,72 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Cricket.Interpreter.Error;
 
 namespace Cricket.Interpreter.Scanner;
 
 public class Scanner {
     private readonly string[] _source;
+    private List<Token> _tokens;
     private int _index, _line;
 
     public Scanner(string[] source) {
         _source = source;
+        _tokens = new List<Token>();
     }
 
+    
+    // TODO: Add support for multi-character syntax
     public List<Token> Tokenize() {
-        var tokens = new List<Token>();
+        
         while (!EndOfFile()) {
             var current = Consume();
-            if (IsDigit(current)) {
-                tokens.Add(new Token(TokenType.Numeric, ConsumeNumeric(current), _line));
+            if (char.IsDigit(current)) {
+                NewToken(TokenType.Integer, ConsumeInteger(current));
+                continue;
+            }
+
+            if (char.IsLetter(current))
+            {
+                var consumedString = ConsumeString(current);
+                switch (consumedString)
+                {
+                    case "var":
+                        NewToken(TokenType.Var, consumedString);
+                        break;
+                    default:
+                        NewToken(TokenType.Identifier, consumedString);
+                        break;
+                }
                 continue;
             }
             switch (current) {
                 case ' ':
                     break;
                 case '+':
-                    tokens.Add(new Token(TokenType.Plus, current.ToString(), _line));
+                    NewToken(TokenType.Plus, current.ToString());
                     break;
                 case '-':
-                    tokens.Add(new Token(TokenType.Minus, current.ToString(), _line));
+                    NewToken(TokenType.Minus, current.ToString());
                     break;
                 case '*':
-                    tokens.Add(new Token(TokenType.Asterisk, current.ToString(), _line));
+                    NewToken(TokenType.Asterisk, current.ToString());
                     break;
                 case '/':
-                    tokens.Add(new Token(TokenType.Slash, current.ToString(), _line));
+                    NewToken(TokenType.Slash, current.ToString());
                     break;
                 case ';':
-                    tokens.Add(new Token(TokenType.Semicolon, current.ToString(), _line));
+                    NewToken(TokenType.Semicolon, current.ToString());
                     break;
                 case '(':
-                    tokens.Add(new Token(TokenType.LeftParenthesis, current.ToString(), _line));
+                    NewToken(TokenType.LeftParenthesis, current.ToString());
                     break;
                 case ')':
-                    tokens.Add(new Token(TokenType.RightParenthesis, current.ToString(), _line));
+                    NewToken(TokenType.RightParenthesis, current.ToString());
+                    break;
+                case '=':
+                    NewToken(TokenType.Equal, current.ToString());
                     break;
                 default:
                     throw _index != 0
@@ -49,7 +74,7 @@ public class Scanner {
                         : new UnrecognizedSyntaxError(_source[_line - 1], _line - 1, _source[_line - 1].Length);
             }
         }
-        return tokens;
+        return _tokens;
     }
 
     private char Consume() {
@@ -62,19 +87,33 @@ public class Scanner {
         return character;
     }
 
-    private string ConsumeNumeric(char current) {
+    private string ConsumeInteger(char current) {
         var numeric = current.ToString();
         while (!EndOfFile()) {
-            if (!IsDigit(Peek())) break;
+            if (!Char.IsDigit(Peek())) break;
             numeric += Consume();
         }
         return numeric;
     }
 
-    private static bool IsDigit(char character) {
-        return character is >= '0' and <= '9';
+    private string ConsumeString(char current)
+    {
+        var stringBuilder = new StringBuilder();
+        stringBuilder.Append(current);
+        while (!EndOfFile())
+        {
+            if (!char.IsLetterOrDigit(Peek())) break;
+            stringBuilder.Append(Consume());
+        }
+
+        return stringBuilder.ToString();
     }
 
+    private void NewToken(TokenType tokenType, string lexeme)
+    {
+        _tokens.Add(new Token(tokenType, lexeme, _line));
+    }
+    
     private char Peek() {
         return _source[_line][_index];
     }

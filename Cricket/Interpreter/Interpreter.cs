@@ -7,12 +7,12 @@ namespace Cricket.Interpreter;
 public class Interpreter
 {
     private readonly string _path;
-    public Environment.Environment Environment { get; }
+    private readonly Environment.Environment _environment;
 
     public Interpreter(string path)
     {
         _path = path;
-        Environment = new Environment.Environment();
+        _environment = new Environment.Environment();
     }
 
     public void StartInterpreter()
@@ -26,7 +26,7 @@ public class Interpreter
             var statements = parser.Parse();
             foreach (var statement in statements)
             {
-                Console.Out.WriteLine(statement.Interpreter());
+                Console.Out.WriteLine(statement.Interpreter(_environment));
             }
         }
         catch (Exception e)
