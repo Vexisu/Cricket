@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Cricket;
 
-internal class Program {
+internal static class Program {
     private static void Main(string[] args) {
         if (args.Length > 0) {
             var path = args[0];
