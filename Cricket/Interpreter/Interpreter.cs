@@ -19,7 +19,7 @@ public class Interpreter {
             var scanner = new Scanner.Scanner(source);
             var tokens = scanner.Tokenize();
             var parser = new Parser.Parser(tokens);
-            var statements = parser.Parse();
+            var statements = parser.ParseStatements();
             foreach (var statement in statements) Console.Out.WriteLine(statement.Interpreter(_environment));
         }
         catch (Exception e) {
@@ -46,7 +46,7 @@ public class Interpreter {
 
     private static void HandleUnexpectedSyntaxError(UnexpectedSyntaxError error) {
         Console.Out.WriteLine(error.Message);
-        Console.Out.Write($@"{error.Line + 1}: present: {error.Present}, expected {error.Expected}");
+        Console.Out.WriteLine($@"{error.Line + 1}: present: {error.Present}, expected: {error.Expected}.");
     }
 
     private static void HandleUnrecognizedSyntaxError(UnrecognizedSyntaxError error) {

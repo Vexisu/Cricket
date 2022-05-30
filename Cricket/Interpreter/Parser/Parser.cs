@@ -16,25 +16,54 @@ public class Parser {
         _tokens = tokens;
     }
 
-    public List<IStatement> Parse() {
+    public List<IStatement> ParseStatements(bool inner = false) {
         var statements = new List<IStatement>();
         while (!EndOfFile()) {
+            if (inner && Peek().Type == TokenType.RightBrace)
+                break;
             switch (Peek().Type) {
                 case TokenType.Var:
                     statements.Add(ParseVariableStatement());
+                    ExpectSemicolon();
+                    break;
+                case TokenType.If:
+                    statements.Add(ParseIfStatement());
+                    break;
+                case TokenType.Print:
+                    statements.Add(ParsePrintStatement());
+                    ExpectSemicolon();
                     break;
                 default:
-                    statements.Add(ParseExpression());
-                    break;
+                    throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "statement");
             }
-            if (Peek() != null && !Match(Peek(), TokenType.Semicolon))
-                throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, ";");
-            if (Peek() == null) throw new UnexpectedSyntaxError(_tokens[^1].Line, _tokens[^1].Lexeme, ";");
-            Consume();
         }
         return statements;
     }
-    
+
+    private IStatement ParsePrintStatement() {
+        Consume();
+        return new PrintStatement(ParseExpression());
+    }
+
+    private IStatement ParseIfStatement() {
+        Consume();
+        if (Peek().Type != TokenType.LeftParenthesis)
+            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "(");
+        Consume();
+        var condition = ParseExpression();
+        if (Peek().Type != TokenType.RightParenthesis)
+            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, ")");
+        Consume();
+        if (Peek().Type != TokenType.LeftBrace)
+            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "{");
+        Consume();
+        var statements = ParseStatements(true);
+        if (Peek().Type != TokenType.RightBrace)
+            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "}");
+        Consume();
+        return new IfStatement(condition, statements);
+    }
+
     private IStatement ParseVariableStatement() {
         Consume();
         if (Peek().Type != TokenType.Less)
@@ -55,10 +84,7 @@ public class Parser {
     }
 
     private IExpression ParseExpression() {
-        if (Match(Peek(), TokenType.Integer, TokenType.Identifier, TokenType.LeftParenthesis)) {
-            return ParseTerm();
-        }
-        return null;
+        return Match(Peek(), TokenType.Integer, TokenType.Identifier, TokenType.LeftParenthesis) ? ParseTerm() : null;
     }
 
     private IExpression ParseTerm() {
@@ -132,6 +158,14 @@ public class Parser {
     private IExpression ParseIdentifier() {
         var current = Consume();
         return new VariableExpression(current.Lexeme);
+    }
+
+    private void ExpectSemicolon() {
+        if (Peek() != null && !Match(Peek(), TokenType.Semicolon))
+            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, ";");
+        if (Peek() == null)
+            throw new UnexpectedSyntaxError(_tokens[^1].Line, _tokens[^1].Lexeme, ";");
+        Consume();
     }
 
     private static bool Match(Token token, params TokenType[] tokenTypes) {

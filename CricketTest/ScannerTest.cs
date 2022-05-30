@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 namespace CricketTest;
 
-public class Tests {
+public class ScannerTest {
     [Test]
     public void MathExprTest() {
         var scanner = new Scanner(new[] {"2 + 2 / 1012 * 31"});

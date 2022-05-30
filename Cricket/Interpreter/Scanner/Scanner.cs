@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
 using Cricket.Interpreter.Error;
 
@@ -8,7 +6,7 @@ namespace Cricket.Interpreter.Scanner;
 
 public class Scanner {
     private readonly string[] _source;
-    private List<Token> _tokens;
+    private readonly List<Token> _tokens;
     private int _index, _line;
 
     public Scanner(string[] source) {
@@ -30,6 +28,12 @@ public class Scanner {
                 switch (consumedString) {
                     case "var":
                         NewToken(TokenType.Var, consumedString);
+                        break;
+                    case "if":
+                        NewToken(TokenType.If, consumedString);
+                        break;
+                    case "print":
+                        NewToken(TokenType.Print, consumedString);
                         break;
                     default:
                         NewToken(TokenType.Identifier, consumedString);
@@ -69,6 +73,12 @@ public class Scanner {
                     break;
                 case '>':
                     NewToken(TokenType.Greater, current.ToString());
+                    break;
+                case '{':
+                    NewToken(TokenType.LeftBrace, current.ToString());
+                    break;
+                case '}':
+                    NewToken(TokenType.RightBrace, current.ToString());
                     break;
                 default:
                     throw _index != 0
