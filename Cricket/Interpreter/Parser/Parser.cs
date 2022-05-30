@@ -39,6 +39,8 @@ public class Parser {
         }
         return statements;
     }
+    
+    /* Statements */
 
     private IStatement ParsePrintStatement() {
         Consume();
@@ -82,9 +84,11 @@ public class Parser {
             throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "=");
         return new VariableStatement(variableName, dataType, ParseExpression());
     }
+    
+    /* Expressions */
 
     private IExpression ParseExpression() {
-        return Match(Peek(), TokenType.Integer, TokenType.Identifier, TokenType.LeftParenthesis) ? ParseTerm() : null;
+        return Match(Peek(), TokenType.Integer, TokenType.Identifier, TokenType.LeftParenthesis, TokenType.Minus) ? ParseTerm() : null;
     }
 
     private IExpression ParseTerm() {
@@ -124,7 +128,7 @@ public class Parser {
     }
 
     private IExpression ParseParenthesis() {
-        if (!Match(Peek(), TokenType.LeftParenthesis, TokenType.RightParenthesis)) return ParseValue();
+        if (!Match(Peek(), TokenType.LeftParenthesis, TokenType.RightParenthesis)) return ParseUnary();
         if (!Match(Peek(), TokenType.LeftParenthesis))
             throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "(");
         Consume();
@@ -133,6 +137,14 @@ public class Parser {
             throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, ")");
         Consume();
         return expression;
+    }
+
+    private IExpression ParseUnary() {
+        if (Peek().Type == TokenType.Minus) {
+            Consume();
+            return new NegationExpression(ParseParenthesis());
+        }
+        return ParseValue();
     }
 
     private IExpression ParseValue() {
