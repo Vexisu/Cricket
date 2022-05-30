@@ -16,10 +16,8 @@ public class Scanner {
         _tokens = new List<Token>();
     }
 
-    
     // TODO: Add support for multi-character syntax
     public List<Token> Tokenize() {
-        
         while (!EndOfFile()) {
             var current = Consume();
             if (char.IsDigit(current)) {
@@ -27,11 +25,9 @@ public class Scanner {
                 continue;
             }
 
-            if (char.IsLetter(current))
-            {
+            if (char.IsLetter(current)) {
                 var consumedString = ConsumeString(current);
-                switch (consumedString)
-                {
+                switch (consumedString) {
                     case "var":
                         NewToken(TokenType.Var, consumedString);
                         break;
@@ -90,30 +86,26 @@ public class Scanner {
     private string ConsumeInteger(char current) {
         var numeric = current.ToString();
         while (!EndOfFile()) {
-            if (!Char.IsDigit(Peek())) break;
+            if (!char.IsDigit(Peek())) break;
             numeric += Consume();
         }
         return numeric;
     }
 
-    private string ConsumeString(char current)
-    {
+    private string ConsumeString(char current) {
         var stringBuilder = new StringBuilder();
         stringBuilder.Append(current);
-        while (!EndOfFile())
-        {
+        while (!EndOfFile()) {
             if (!char.IsLetterOrDigit(Peek())) break;
             stringBuilder.Append(Consume());
         }
-
         return stringBuilder.ToString();
     }
 
-    private void NewToken(TokenType tokenType, string lexeme)
-    {
+    private void NewToken(TokenType tokenType, string lexeme) {
         _tokens.Add(new Token(tokenType, lexeme, _line));
     }
-    
+
     private char Peek() {
         return _source[_line][_index];
     }

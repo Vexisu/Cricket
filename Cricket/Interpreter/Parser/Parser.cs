@@ -18,9 +18,8 @@ public class Parser {
 
     public List<IStatement> Parse() {
         var statements = new List<IStatement>();
-        while (!EndOfFile()) {
-            switch (Peek().Type)
-            {
+        while (!EndOfFile())
+            switch (Peek().Type) {
                 case TokenType.Var:
                     statements.Add(ParseVariableStatement());
                     break;
@@ -28,26 +27,18 @@ public class Parser {
                     statements.Add(ParseExpression());
                     break;
             }
-        }
         return statements;
     }
 
     // TODO: Add exception for syntax error.
     // TODO: Add support for other types than integer.
-    private IStatement ParseVariableStatement()
-    {
+    private IStatement ParseVariableStatement() {
         Consume();
-        if (Peek().Type != TokenType.Identifier)
-        {
-            return null;
-        }
+        if (Peek().Type != TokenType.Identifier) return null;
 
         var variableName = Consume().Lexeme;
-        if (Consume().Type != TokenType.Equal)
-        {
-            return null;
-        }
-        
+        if (Consume().Type != TokenType.Equal) return null;
+
         return new VariableStatement(variableName, DataType.Integer, ParseExpression());
     }
 
@@ -55,12 +46,9 @@ public class Parser {
     private IExpression ParseExpression() {
         if (Match(Peek(), TokenType.Integer, TokenType.Identifier, TokenType.LeftParenthesis)) {
             var expression = ParseTerm();
-            if (Peek() != null && !Match(Peek(), TokenType.Semicolon)) {
+            if (Peek() != null && !Match(Peek(), TokenType.Semicolon))
                 throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, ";");
-            }
-            if (Peek() == null) {
-                throw new UnexpectedSyntaxError(_tokens[^1].Line, _tokens[^1].Lexeme, ";");
-            }
+            if (Peek() == null) throw new UnexpectedSyntaxError(_tokens[^1].Line, _tokens[^1].Lexeme, ";");
             Consume();
             return expression;
         }
@@ -69,7 +57,7 @@ public class Parser {
 
     private IExpression ParseTerm() {
         var expression = ParseFactor();
-        while (Match(Peek(), TokenType.Plus, TokenType.Minus)) {
+        while (Match(Peek(), TokenType.Plus, TokenType.Minus))
             switch (Peek().Type) {
                 case TokenType.Plus:
                     Consume();
@@ -82,13 +70,12 @@ public class Parser {
                         ParseFactor());
                     break;
             }
-        }
         return expression;
     }
 
     private IExpression ParseFactor() {
         var expression = ParseParenthesis();
-        while (Match(Peek(), TokenType.Asterisk, TokenType.Slash)) {
+        while (Match(Peek(), TokenType.Asterisk, TokenType.Slash))
             switch (Peek().Type) {
                 case TokenType.Asterisk:
                     Consume();
@@ -101,22 +88,16 @@ public class Parser {
                         ParseParenthesis());
                     break;
             }
-        }
         return expression;
     }
 
     private IExpression ParseParenthesis() {
-        if (!Match(Peek(), TokenType.LeftParenthesis, TokenType.RightParenthesis)) {
-            return ParseValue();
-        }
-        if (!Match(Peek(), TokenType.LeftParenthesis)) {
-            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "(");
-        }
+        if (!Match(Peek(), TokenType.LeftParenthesis, TokenType.RightParenthesis)) return ParseValue();
+        if (!Match(Peek(), TokenType.LeftParenthesis)) throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "(");
         Consume();
         var expression = ParseTerm();
-        if (!Match(Peek(), TokenType.RightParenthesis)) {
+        if (!Match(Peek(), TokenType.RightParenthesis))
             throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, ")");
-        }
         Consume();
         return expression;
     }
@@ -124,7 +105,7 @@ public class Parser {
     private IExpression ParseValue() {
         switch (Peek().Type) {
             case TokenType.Integer:
-                return new ValueExpression(Int32.Parse(Consume().Lexeme), DataType.Integer);
+                return new ValueExpression(int.Parse(Consume().Lexeme), DataType.Integer);
             case TokenType.Identifier:
                 return ParseIdentifier();
             case TokenType.String:
@@ -135,8 +116,7 @@ public class Parser {
         }
     }
 
-    private IExpression ParseIdentifier()
-    {
+    private IExpression ParseIdentifier() {
         var current = Consume();
         return new VariableExpression(current.Lexeme);
     }
