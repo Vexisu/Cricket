@@ -12,8 +12,4 @@ public class UnexpectedSyntaxError : Exception {
         Present = present;
         Expected = expected;
     }
-
-    public UnexpectedSyntaxError(string message) : base(message) { }
-
-    public UnexpectedSyntaxError(string message, Exception innerException) : base(message, innerException) { }
 }

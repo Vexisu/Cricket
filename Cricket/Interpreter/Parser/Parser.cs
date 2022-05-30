@@ -34,20 +34,26 @@ public class Parser {
         }
         return statements;
     }
-
-    // TODO: Add exception for syntax error.
-    // TODO: Add support for other types than integer.
+    
     private IStatement ParseVariableStatement() {
         Consume();
-        if (Peek().Type != TokenType.Identifier) return null;
-
+        if (Peek().Type != TokenType.Less)
+            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "<");
+        Consume();
+        if (Peek().Type != TokenType.Identifier || !Enum.IsDefined(typeof(DataType), Peek().Lexeme))
+            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "data type");
+        var dataType = Enum.Parse<DataType>(Consume().Lexeme);
+        if (Peek().Type != TokenType.Greater)
+            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, ">");
+        Consume();
+        if (Peek().Type != TokenType.Identifier)
+            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "variable name");
         var variableName = Consume().Lexeme;
-        if (Consume().Type != TokenType.Equal) return null;
-
-        return new VariableStatement(variableName, DataType.Integer, ParseExpression());
+        if (Consume().Type != TokenType.Equal)
+            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "=");
+        return new VariableStatement(variableName, dataType, ParseExpression());
     }
 
-    // TODO: Move semicolon check to more appropriate place
     private IExpression ParseExpression() {
         if (Match(Peek(), TokenType.Integer, TokenType.Identifier, TokenType.LeftParenthesis)) {
             return ParseTerm();
@@ -110,7 +116,13 @@ public class Parser {
             case TokenType.Identifier:
                 return ParseIdentifier();
             case TokenType.String:
-                return new ValueExpression(Consume().Lexeme, DataType.Float);
+                return new ValueExpression(Consume().Lexeme, DataType.String);
+            case TokenType.True:
+                Consume();
+                return new ValueExpression(true, DataType.Boolean);
+            case TokenType.False:
+                Consume();
+                return new ValueExpression(false, DataType.Boolean);
             default:
                 var current = Consume();
                 throw new UnexpectedSyntaxError(current.Line, current.Lexeme, "Value");
@@ -128,7 +140,9 @@ public class Parser {
 
     private Token Peek(int i = 1) {
         i--;
-        return _index + i < _tokens.Count ? _tokens[_index + i] : null;
+        if (_index + i >= _tokens.Count)
+            throw new UnexpectedEndOfFileError();
+        return _tokens[_index + i];
     }
 
     private Token Previous(int i = 1) {
@@ -136,7 +150,9 @@ public class Parser {
     }
 
     private Token Consume() {
-        return !EndOfFile() ? _tokens[_index++] : null;
+        if (EndOfFile())
+            throw new UnexpectedEndOfFileError();
+        return _tokens[_index++];
     }
 
     private bool EndOfFile() {

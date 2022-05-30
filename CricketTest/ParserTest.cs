@@ -12,7 +12,11 @@ public class ParserTest {
     public void TestValue() {
         try {
             Environment environment = new();
-            var scanner = new Scanner(new[] {"var x = 5 + 22;", "var y = (12 + x) * 2", "; x + y;"});
+            var scanner = new Scanner(new[] {
+                "var<Integer> x = 5 + 22;",
+                "var<Integer> y = (12 + x) * 2;",
+                "x + y;"
+            });
             var tokens = scanner.Tokenize();
             var parser = new Parser(tokens);
             var statements = parser.Parse();

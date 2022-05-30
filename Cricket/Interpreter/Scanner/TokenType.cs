@@ -29,6 +29,8 @@ public enum TokenType {
     String,
     Integer,
     Float,
+    True,
+    False,
 
     // Keywords
     Import,

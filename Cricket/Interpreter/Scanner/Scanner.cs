@@ -64,6 +64,12 @@ public class Scanner {
                 case '=':
                     NewToken(TokenType.Equal, current.ToString());
                     break;
+                case '<':
+                    NewToken(TokenType.Less, current.ToString());
+                    break;
+                case '>':
+                    NewToken(TokenType.Greater, current.ToString());
+                    break;
                 default:
                     throw _index != 0
                         ? new UnrecognizedSyntaxError(_source[_line], _line, _index)

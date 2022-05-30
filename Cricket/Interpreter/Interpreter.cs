@@ -35,8 +35,11 @@ public class Interpreter {
             case UnexpectedSyntaxError error:
                 HandleUnexpectedSyntaxError(error);
                 break;
+            case UnexpectedEndOfFileError error:
+                Console.Out.WriteLine("Unexpected end of file error.");
+                break;
             default:
-                Console.Out.WriteLine(exception.Message);
+                Console.Out.WriteLine(exception.ToString());
                 break;
         }
     }
