@@ -22,13 +22,13 @@ public class BinaryExpression : IExpression {
     public object Interpreter(Environment.Environment environment) {
         switch (_type) {
             case ExpressionType.Addition:
-                return (int) _left.Interpreter(environment) + (int) _right.Interpreter(environment);
+                return (dynamic) _left.Interpreter(environment) + (dynamic) _right.Interpreter(environment);
             case ExpressionType.Subtraction:
-                return (int) _left.Interpreter(environment) - (int) _right.Interpreter(environment);
+                return (dynamic) _left.Interpreter(environment) - (dynamic) _right.Interpreter(environment);
             case ExpressionType.Multiplication:
-                return (int) _left.Interpreter(environment) * (int) _right.Interpreter(environment);
+                return (dynamic) _left.Interpreter(environment) * (dynamic) _right.Interpreter(environment);
             case ExpressionType.Division:
-                return (int) _left.Interpreter(environment) / (int) _right.Interpreter(environment);
+                return (dynamic) _left.Interpreter(environment) / (dynamic) _right.Interpreter(environment);
             default:
                 throw new ArgumentOutOfRangeException();
         }

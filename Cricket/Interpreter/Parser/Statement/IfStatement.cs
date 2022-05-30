@@ -13,11 +13,10 @@ public class IfStatement : IStatement {
     }
 
     public object Interpreter(Environment.Environment environment) {
-        if (_condition.Interpreter(environment) is int condition) {
-            if (condition > 0) {
-                foreach (var statement in _statements) {
-                    statement.Interpreter(environment);
-                }   
+        if (_condition.Interpreter(environment) is bool condition) {
+            if (!condition) return null;
+            foreach (var statement in _statements) {
+                statement.Interpreter(environment);
             }
         }
         return null;

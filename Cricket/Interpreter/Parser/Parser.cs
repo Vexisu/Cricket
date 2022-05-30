@@ -39,7 +39,7 @@ public class Parser {
         }
         return statements;
     }
-    
+
     /* Statements */
 
     private IStatement ParsePrintStatement() {
@@ -84,11 +84,14 @@ public class Parser {
             throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "=");
         return new VariableStatement(variableName, dataType, ParseExpression());
     }
-    
+
     /* Expressions */
 
     private IExpression ParseExpression() {
-        return Match(Peek(), TokenType.Integer, TokenType.Identifier, TokenType.LeftParenthesis, TokenType.Minus) ? ParseTerm() : null;
+        return Match(Peek(), TokenType.Integer, TokenType.Float, TokenType.True, TokenType.False, TokenType.Identifier,
+            TokenType.LeftParenthesis, TokenType.Minus)
+            ? ParseTerm()
+            : null;
     }
 
     private IExpression ParseTerm() {
@@ -151,6 +154,8 @@ public class Parser {
         switch (Peek().Type) {
             case TokenType.Integer:
                 return new ValueExpression(int.Parse(Consume().Lexeme), DataType.Integer);
+            case TokenType.Float:
+                return new ValueExpression(float.Parse(Consume().Lexeme), DataType.Float);
             case TokenType.Identifier:
                 return ParseIdentifier();
             case TokenType.String:

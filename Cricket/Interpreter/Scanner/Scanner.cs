@@ -19,7 +19,7 @@ public class Scanner {
         while (!EndOfFile()) {
             var current = Consume();
             if (char.IsDigit(current)) {
-                NewToken(TokenType.Integer, ConsumeInteger(current));
+                ConsumeNumeric(current);
                 continue;
             }
 
@@ -34,6 +34,12 @@ public class Scanner {
                         break;
                     case "print":
                         NewToken(TokenType.Print, consumedString);
+                        break;
+                    case "true":
+                        NewToken(TokenType.True, consumedString);
+                        break;    
+                    case "false":
+                        NewToken(TokenType.False, consumedString);
                         break;
                     default:
                         NewToken(TokenType.Identifier, consumedString);
@@ -99,13 +105,22 @@ public class Scanner {
         return character;
     }
 
-    private string ConsumeInteger(char current) {
+    private void ConsumeNumeric(char current) {
+        var tokenType = TokenType.Integer;
         var numeric = current.ToString();
         while (!EndOfFile()) {
-            if (!char.IsDigit(Peek())) break;
+            if (!(char.IsDigit(Peek()) || Peek() == '.')) break;
+            if (Peek() == '.') {
+                if (tokenType == TokenType.Integer) {
+                    tokenType = TokenType.Float;
+                }
+                else if (tokenType == TokenType.Float) {
+                    break;
+                }
+            }
             numeric += Consume();
         }
-        return numeric;
+        NewToken(tokenType, numeric);
     }
 
     private string ConsumeString(char current) {

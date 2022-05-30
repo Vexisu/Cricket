@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
+using System.Threading;
 
 namespace Cricket;
 
 internal static class Program {
     private static void Main(string[] args) {
+        HackDecimals();
+        
         if (args.Length > 0) {
             var path = args[0];
             if (!File.Exists(path)) {
@@ -18,5 +22,12 @@ internal static class Program {
             Console.Out.WriteLine("No path to source file.");
             Environment.Exit(101);
         }
+    }
+    
+    // This dirty hack fixes decimal separator in CSharp
+    private static void HackDecimals() {
+        var cultureInfo = new CultureInfo("en-US");
+        cultureInfo.NumberFormat = NumberFormatInfo.InvariantInfo;
+        Thread.CurrentThread.CurrentCulture = cultureInfo;
     }
 }
