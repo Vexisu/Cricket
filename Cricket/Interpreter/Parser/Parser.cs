@@ -18,7 +18,7 @@ public class Parser {
 
     public List<IStatement> Parse() {
         var statements = new List<IStatement>();
-        while (!EndOfFile())
+        while (!EndOfFile()) {
             switch (Peek().Type) {
                 case TokenType.Var:
                     statements.Add(ParseVariableStatement());
@@ -27,6 +27,11 @@ public class Parser {
                     statements.Add(ParseExpression());
                     break;
             }
+            if (Peek() != null && !Match(Peek(), TokenType.Semicolon))
+                throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, ";");
+            if (Peek() == null) throw new UnexpectedSyntaxError(_tokens[^1].Line, _tokens[^1].Lexeme, ";");
+            Consume();
+        }
         return statements;
     }
 
@@ -45,12 +50,7 @@ public class Parser {
     // TODO: Move semicolon check to more appropriate place
     private IExpression ParseExpression() {
         if (Match(Peek(), TokenType.Integer, TokenType.Identifier, TokenType.LeftParenthesis)) {
-            var expression = ParseTerm();
-            if (Peek() != null && !Match(Peek(), TokenType.Semicolon))
-                throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, ";");
-            if (Peek() == null) throw new UnexpectedSyntaxError(_tokens[^1].Line, _tokens[^1].Lexeme, ";");
-            Consume();
-            return expression;
+            return ParseTerm();
         }
         return null;
     }
@@ -93,7 +93,8 @@ public class Parser {
 
     private IExpression ParseParenthesis() {
         if (!Match(Peek(), TokenType.LeftParenthesis, TokenType.RightParenthesis)) return ParseValue();
-        if (!Match(Peek(), TokenType.LeftParenthesis)) throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "(");
+        if (!Match(Peek(), TokenType.LeftParenthesis))
+            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "(");
         Consume();
         var expression = ParseTerm();
         if (!Match(Peek(), TokenType.RightParenthesis))

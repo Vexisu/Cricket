@@ -12,8 +12,9 @@ public class ParserTest {
     public void TestValue() {
         try {
             Environment environment = new();
-            var scanner = new Scanner(new[] {"var x = 5 + 22; var y = 12 + x; x + y;"});
-            var parser = new Parser(scanner.Tokenize());
+            var scanner = new Scanner(new[] {"var x = 5 + 22;", "var y = (12 + x) * 2", "; x + y;"});
+            var tokens = scanner.Tokenize();
+            var parser = new Parser(tokens);
             var statements = parser.Parse();
             foreach (var statement in statements) Console.Out.WriteLine(statement.Interpreter(environment));
         }

@@ -107,7 +107,7 @@ public class Scanner {
     }
 
     private char Peek() {
-        return _source[_line][_index];
+        return (_index < _source[_line].Length) ? _source[_line][_index] : _source[_line + 1][0];
     }
 
     private bool EndOfFile() {
