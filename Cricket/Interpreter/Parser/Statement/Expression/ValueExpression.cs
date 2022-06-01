@@ -1,8 +1,8 @@
 namespace Cricket.Interpreter.Parser.Statement.Expression;
 
 public class ValueExpression : IExpression {
-    private readonly object _value;
     private readonly DataType _dataType;
+    private readonly object _value;
 
     public ValueExpression(object value, DataType dataType) {
         _value = value;

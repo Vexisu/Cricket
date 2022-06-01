@@ -5,8 +5,8 @@ using Cricket.Interpreter.Error;
 namespace Cricket.Interpreter;
 
 public class Interpreter {
-    private readonly string _path;
     private readonly Environment.Environment _environment;
+    private readonly string _path;
 
     public Interpreter(string path) {
         _path = path;
@@ -35,7 +35,7 @@ public class Interpreter {
             case UnexpectedSyntaxError error:
                 HandleUnexpectedSyntaxError(error);
                 break;
-            case UnexpectedEndOfFileError error:
+            case UnexpectedEndOfFileError:
                 Console.Out.WriteLine("Unexpected end of file error.");
                 break;
             default:

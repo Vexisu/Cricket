@@ -1,7 +1,7 @@
-namespace Cricket.Interpreter.Parser.Statement.Expression; 
+namespace Cricket.Interpreter.Parser.Statement.Expression;
 
 public class NegationExpression : IExpression {
-    private IExpression _expression;
+    private readonly IExpression _expression;
 
     public NegationExpression(IExpression expression) {
         _expression = expression;

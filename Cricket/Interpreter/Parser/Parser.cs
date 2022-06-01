@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using Cricket.Interpreter.Error;
 using Cricket.Interpreter.Parser.Statement;
 using Cricket.Interpreter.Parser.Statement.Expression;
@@ -10,8 +9,8 @@ using Cricket.Interpreter.Scanner;
 namespace Cricket.Interpreter.Parser;
 
 public class Parser {
-    private int _index;
     private readonly List<Token> _tokens;
+    private int _index;
 
     public Parser(List<Token> tokens) {
         _tokens = tokens;
@@ -98,7 +97,7 @@ public class Parser {
     private IExpression ParseComparison() {
         var expression = ParseTerm();
         while (Match(Peek(), TokenType.EqualEqual, TokenType.Greater, TokenType.Less, TokenType.GreaterEqual,
-                   TokenType.LessEqual)) {
+                   TokenType.LessEqual))
             if (Peek().Type == TokenType.EqualEqual) {
                 Consume();
                 expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Equal, ParseTerm());
@@ -120,7 +119,6 @@ public class Parser {
                 Consume();
                 expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.LessEqual, ParseTerm());
             }
-        }
         return expression;
     }
 

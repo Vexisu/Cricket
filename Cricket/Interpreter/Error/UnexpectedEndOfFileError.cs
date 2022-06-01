@@ -1,7 +1,5 @@
 using System;
 
-namespace Cricket.Interpreter.Error; 
+namespace Cricket.Interpreter.Error;
 
-public class UnexpectedEndOfFileError : Exception {
-    
-}
+public class UnexpectedEndOfFileError : Exception { }

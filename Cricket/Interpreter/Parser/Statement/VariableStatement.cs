@@ -3,9 +3,9 @@
 namespace Cricket.Interpreter.Parser.Statement;
 
 public class VariableStatement : IStatement {
+    private readonly IExpression _expression;
     private readonly string _name;
     private readonly DataType _type;
-    private readonly IExpression _expression;
 
     public VariableStatement(string name, DataType type, IExpression expression) {
         _name = name;

@@ -1,7 +1,7 @@
 using System;
 using Cricket.Interpreter.Parser.Statement.Expression;
 
-namespace Cricket.Interpreter.Parser.Statement; 
+namespace Cricket.Interpreter.Parser.Statement;
 
 public class PrintStatement : IStatement {
     private readonly IExpression _expression;
