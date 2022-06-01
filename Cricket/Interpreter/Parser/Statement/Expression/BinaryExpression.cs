@@ -7,11 +7,16 @@ public class BinaryExpression : IExpression {
         Addition,
         Subtraction,
         Multiplication,
-        Division
+        Division,
+        Equal,
+        Greater,
+        Less,
+        GreaterEqual,
+        LessEqual
     }
 
-    private IExpression _left, _right;
-    private ExpressionType _type;
+    private readonly IExpression _left, _right;
+    private readonly ExpressionType _type;
 
     public BinaryExpression(IExpression left, ExpressionType type, IExpression right) {
         _left = left;
@@ -20,17 +25,19 @@ public class BinaryExpression : IExpression {
     }
 
     public object Interpreter(Environment.Environment environment) {
-        switch (_type) {
-            case ExpressionType.Addition:
-                return (dynamic) _left.Interpreter(environment) + (dynamic) _right.Interpreter(environment);
-            case ExpressionType.Subtraction:
-                return (dynamic) _left.Interpreter(environment) - (dynamic) _right.Interpreter(environment);
-            case ExpressionType.Multiplication:
-                return (dynamic) _left.Interpreter(environment) * (dynamic) _right.Interpreter(environment);
-            case ExpressionType.Division:
-                return (dynamic) _left.Interpreter(environment) / (dynamic) _right.Interpreter(environment);
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
+        var leftValue = (dynamic) _left.Interpreter(environment);
+        var rightValue = (dynamic) _right.Interpreter(environment);
+        return _type switch {
+            ExpressionType.Addition => leftValue + rightValue,
+            ExpressionType.Subtraction => leftValue - rightValue,
+            ExpressionType.Multiplication => leftValue * rightValue,
+            ExpressionType.Division => leftValue / rightValue,
+            ExpressionType.Equal => leftValue == rightValue,
+            ExpressionType.Greater => leftValue > rightValue,
+            ExpressionType.Less => leftValue < rightValue,
+            ExpressionType.GreaterEqual => leftValue >= rightValue,
+            ExpressionType.LessEqual => leftValue <= rightValue,
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 }

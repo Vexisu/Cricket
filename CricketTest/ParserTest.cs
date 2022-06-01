@@ -22,15 +22,17 @@ public class ParserTest {
         try {
             Environment environment = new();
             var scanner = new Scanner(new[] {
-                "var<Integer> x = 2.2 + 8 + 5 * 22;",
+                "var<Integer> x = 2 + 18;",
                 "var<Integer> y = (12 + x) * 2;",
                 "print x;",
-                "if (false) { print y; }"
+                "if (x == 20) { print y; }"
             });
             var tokens = scanner.Tokenize();
             var parser = new Parser(tokens);
             var statements = parser.ParseStatements();
-            foreach (var statement in statements) statement.Interpreter(environment);
+            foreach (var statement in statements) {
+                statement.Interpreter(environment);
+            }
         }
         catch (Exception e) {
             Interpreter.HandleException(e);

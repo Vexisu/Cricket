@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using Cricket.Interpreter.Error;
 using Cricket.Interpreter.Parser.Statement;
 using Cricket.Interpreter.Parser.Statement.Expression;
@@ -90,24 +91,51 @@ public class Parser {
     private IExpression ParseExpression() {
         return Match(Peek(), TokenType.Integer, TokenType.Float, TokenType.True, TokenType.False, TokenType.Identifier,
             TokenType.LeftParenthesis, TokenType.Minus)
-            ? ParseTerm()
+            ? ParseComparison()
             : null;
+    }
+
+    private IExpression ParseComparison() {
+        var expression = ParseTerm();
+        while (Match(Peek(), TokenType.EqualEqual, TokenType.Greater, TokenType.Less, TokenType.GreaterEqual,
+                   TokenType.LessEqual)) {
+            if (Peek().Type == TokenType.EqualEqual) {
+                Consume();
+                expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Equal, ParseTerm());
+            }
+            else if (Peek().Type == TokenType.Greater) {
+                Consume();
+                expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Greater, ParseTerm());
+            }
+            else if (Peek().Type == TokenType.Less) {
+                Consume();
+                expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Less, ParseTerm());
+            }
+            else if (Peek().Type == TokenType.GreaterEqual) {
+                Consume();
+                expression =
+                    new BinaryExpression(expression, BinaryExpression.ExpressionType.GreaterEqual, ParseTerm());
+            }
+            else if (Peek().Type == TokenType.LessEqual) {
+                Consume();
+                expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.LessEqual, ParseTerm());
+            }
+        }
+        return expression;
     }
 
     private IExpression ParseTerm() {
         var expression = ParseFactor();
         while (Match(Peek(), TokenType.Plus, TokenType.Minus))
-            switch (Peek().Type) {
-                case TokenType.Plus:
-                    Consume();
-                    expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Addition,
-                        ParseFactor());
-                    break;
-                case TokenType.Minus:
-                    Consume();
-                    expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Subtraction,
-                        ParseFactor());
-                    break;
+            if (Peek().Type == TokenType.Plus) {
+                Consume();
+                expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Addition,
+                    ParseFactor());
+            }
+            else if (Peek().Type == TokenType.Minus) {
+                Consume();
+                expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Subtraction,
+                    ParseFactor());
             }
         return expression;
     }
@@ -115,17 +143,15 @@ public class Parser {
     private IExpression ParseFactor() {
         var expression = ParseParenthesis();
         while (Match(Peek(), TokenType.Asterisk, TokenType.Slash))
-            switch (Peek().Type) {
-                case TokenType.Asterisk:
-                    Consume();
-                    expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Multiplication,
-                        ParseParenthesis());
-                    break;
-                case TokenType.Slash:
-                    Consume();
-                    expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Division,
-                        ParseParenthesis());
-                    break;
+            if (Peek().Type == TokenType.Asterisk) {
+                Consume();
+                expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Multiplication,
+                    ParseParenthesis());
+            }
+            else if (Peek().Type == TokenType.Slash) {
+                Consume();
+                expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Division,
+                    ParseParenthesis());
             }
         return expression;
     }

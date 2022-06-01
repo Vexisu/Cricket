@@ -37,7 +37,7 @@ public class Scanner {
                         break;
                     case "true":
                         NewToken(TokenType.True, consumedString);
-                        break;    
+                        break;
                     case "false":
                         NewToken(TokenType.False, consumedString);
                         break;
@@ -72,7 +72,12 @@ public class Scanner {
                     NewToken(TokenType.RightParenthesis, current.ToString());
                     break;
                 case '=':
-                    NewToken(TokenType.Equal, current.ToString());
+                    if (Peek() == '=') {
+                        NewToken(TokenType.EqualEqual, new string(new[] {current, Consume()}));
+                    }
+                    else {
+                        NewToken(TokenType.Equal, current.ToString());
+                    }
                     break;
                 case '<':
                     NewToken(TokenType.Less, current.ToString());
