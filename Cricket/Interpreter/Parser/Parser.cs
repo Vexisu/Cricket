@@ -198,6 +198,7 @@ public class Parser {
 
     private IExpression ParseIdentifier() {
         var current = Consume();
+        
         return new VariableExpression(current.Lexeme);
     }
 

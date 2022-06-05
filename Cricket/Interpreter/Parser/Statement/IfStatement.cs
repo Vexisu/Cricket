@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Cricket.Interpreter.Error;
 using Cricket.Interpreter.Parser.Statement.Expression;
 
 namespace Cricket.Interpreter.Parser.Statement;
@@ -16,6 +18,19 @@ public class IfStatement : IStatement {
         if (_condition.Interpreter(environment) is bool condition) {
             if (!condition) return null;
             foreach (var statement in _statements) statement.Interpreter(environment);
+        }
+        return null;
+    }
+
+    public object Resolve(Resolver.ResolverEnvironment environment) {
+        var returnedType = _condition.Returns(environment);
+        if (returnedType == DataType.Boolean) {
+            foreach (var statement in _statements) {
+                statement.Resolve(environment);
+            }
+        }
+        else {
+            throw new ResolverError($"The expression of if's condition does not return Boolean. Present: {returnedType}");
         }
         return null;
     }

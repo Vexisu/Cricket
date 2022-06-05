@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Cricket.Interpreter.Error;
+using Cricket.Interpreter.Parser;
 
 namespace Cricket.Interpreter;
 
@@ -20,7 +21,9 @@ public class Interpreter {
             var tokens = scanner.Tokenize();
             var parser = new Parser.Parser(tokens);
             var statements = parser.ParseStatements();
-            foreach (var statement in statements) Console.Out.WriteLine(statement.Interpreter(_environment));
+            var resolver = new Resolver(statements);
+            resolver.Resolve();
+            foreach (var statement in statements) statement.Interpreter(_environment);
         }
         catch (Exception e) {
             HandleException(e);
@@ -37,6 +40,9 @@ public class Interpreter {
                 break;
             case UnexpectedEndOfFileError:
                 Console.Out.WriteLine("Unexpected end of file error.");
+                break;
+            case ResolverError error:
+                Console.Out.WriteLine(error.Message);
                 break;
             default:
                 Console.Out.WriteLine(exception.ToString());

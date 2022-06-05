@@ -15,4 +15,12 @@ public class NegationExpression : IExpression {
             _ => null
         };
     }
+
+    public object Resolve(Resolver.ResolverEnvironment environment) {
+        return _expression.Returns(environment);
+    }
+
+    public DataType Returns(Resolver.ResolverEnvironment environment) {
+        return _expression.Returns(environment);
+    }
 }

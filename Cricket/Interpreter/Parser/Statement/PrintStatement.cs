@@ -14,4 +14,9 @@ public class PrintStatement : IStatement {
         Console.Out.WriteLine(_expression.Interpreter(environment));
         return null;
     }
+
+    public object Resolve(Resolver.ResolverEnvironment environment) {
+        _expression.Returns(environment);
+        return _expression.Resolve(environment);
+    }
 }

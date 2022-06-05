@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using Cricket.Interpreter.Error;
 
 namespace Cricket.Interpreter.Parser.Statement.Expression;
 
@@ -39,5 +41,31 @@ public class BinaryExpression : IExpression {
             ExpressionType.LessEqual => leftValue <= rightValue,
             _ => throw new ArgumentOutOfRangeException()
         };
+    }
+
+    public object Resolve(Resolver.ResolverEnvironment environment) {
+        _left.Resolve(environment);
+        _right.Resolve(environment);
+        return null;
+    }
+
+    // TODO: Better log for invalid binary expressions.
+    public DataType Returns(Resolver.ResolverEnvironment environment) {
+        if (new[] {
+                ExpressionType.Equal, ExpressionType.Greater, ExpressionType.Less, ExpressionType.Greater,
+                ExpressionType.GreaterEqual, ExpressionType.LessEqual
+            }.Contains(_type)) {
+            return DataType.Boolean;
+        }
+        if (_left.Returns(environment) == DataType.Boolean || _right.Returns(environment) == DataType.Boolean) {
+            throw new ResolverError("Arithmetical operations are not allowed on Boolean.");
+        }
+        if (_left.Returns(environment) == DataType.Float || _right.Returns(environment) == DataType.Float) {
+            return DataType.Float;
+        }
+        if (_left.Returns(environment) == DataType.Integer && _right.Returns(environment) == DataType.Integer) {
+            return DataType.Integer;
+        }
+        throw new ResolverError("Unresolvable data types in expression.");
     }
 }
