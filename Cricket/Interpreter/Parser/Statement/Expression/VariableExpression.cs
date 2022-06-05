@@ -17,7 +17,7 @@ public class VariableExpression : IExpression {
     public object Resolve(Resolver.ResolverEnvironment environment) {
         if (Program.Debug) Console.Out.WriteLine($"Resolver: Resolving for variable {_name}.");
         if (!environment.Variables.ContainsKey(_name)) {
-            throw new ResolverError("Variable x does not exists.");
+            throw new ResolverError($"Variable {_name} does not exists.");
         }
         return null;
     }
