@@ -50,6 +50,8 @@ public class Scanner {
             switch (current) {
                 case ' ':
                     break;
+                case '\u0009':
+                    break;
                 case '+':
                     NewToken(TokenType.Plus, current.ToString());
                     break;
