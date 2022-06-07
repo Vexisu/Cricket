@@ -23,6 +23,7 @@ public class IfStatement : IStatement {
     }
 
     public object Resolve(Resolver.ResolverEnvironment environment) {
+        _condition.Resolve(environment);
         var returnedType = _condition.Returns(environment);
         if (returnedType == DataType.Boolean) {
             foreach (var statement in _statements) {
