@@ -24,7 +24,7 @@ public class VariableStatement : IStatement {
         if (Program.Debug) Console.Out.WriteLine($"Resolver: Defining {_name} ({_type}).");
         _expression.Resolve(environment);
         CheckTypeIntegrity(_expression.Returns(environment));
-        environment.Variables.Add(_name, _type);
+        environment.AddVariable(_name, _type);
         return null;
     }
 

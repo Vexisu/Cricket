@@ -16,8 +16,9 @@ public class IfStatement : IStatement {
 
     public object Interpreter(Environment.Environment environment) {
         if (_condition.Interpreter(environment) is bool condition) {
+            var scope = new Environment.Environment(environment);
             if (!condition) return null;
-            foreach (var statement in _statements) statement.Interpreter(environment);
+            foreach (var statement in _statements) statement.Interpreter(scope);
         }
         return null;
     }
@@ -26,8 +27,9 @@ public class IfStatement : IStatement {
         _condition.Resolve(environment);
         var returnedType = _condition.Returns(environment);
         if (returnedType == DataType.Boolean) {
+            var scope = new Resolver.ResolverEnvironment(environment);
             foreach (var statement in _statements) {
-                statement.Resolve(environment);
+                statement.Resolve(scope);
             }
         }
         else {

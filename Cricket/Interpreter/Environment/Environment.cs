@@ -5,9 +5,14 @@ namespace Cricket.Interpreter.Environment;
 
 public class Environment {
     private readonly Dictionary<string, VariableWrapper> _variables;
+    private readonly Environment _parent;
 
-    public Environment() {
+    public Environment(Environment parent) {
         _variables = new Dictionary<string, VariableWrapper>();
+        _parent = parent;
+    }
+
+    public Environment() : this(null){
     }
 
     public bool CreateVariable(string name, DataType dataType, IExpression expression) {
@@ -17,12 +22,14 @@ public class Environment {
     }
 
     public bool UpdateVariable(string name, IExpression expression) {
-        if (!_variables.ContainsKey(name)) return false;
-        _variables[name].Expression = expression;
-        return true;
+        if (_variables.ContainsKey(name)) {
+            _variables[name].Expression = expression;
+            return true;
+        }
+        return _parent?.UpdateVariable(name, expression) ?? false;
     }
 
     public IExpression GetVariable(string name) {
-        return _variables[name].Expression;
+        return _variables.ContainsKey(name) ? _variables[name].Expression : _parent?.GetVariable(name);
     }
 }
