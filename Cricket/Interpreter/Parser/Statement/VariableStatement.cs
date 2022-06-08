@@ -45,6 +45,7 @@ public class VariableStatement : IStatement {
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        throw new ResolverError(@$"Value assigned to variable {_name} has different type than defined. Required: {_type}, present: {returnedType}.");
+        throw new ResolverError(
+            @$"Value assigned to variable {_name} has different type than defined. Required: {_type}, present: {returnedType}.");
     }
 }

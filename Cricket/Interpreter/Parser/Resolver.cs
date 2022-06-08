@@ -25,7 +25,7 @@ public class Resolver {
         public DataType VariableReturns(string name) {
             return _variables.ContainsKey(name) ? _variables[name] : _parent.VariableReturns(name);
         }
-        
+
         public void AddVariable(string name, DataType type) {
             _variables[name] = type;
         }
@@ -39,8 +39,6 @@ public class Resolver {
 
     public void Resolve() {
         var environment = new ResolverEnvironment();
-        foreach (var statement in _statements) {
-            statement.Resolve(environment);
-        }
+        foreach (var statement in _statements) statement.Resolve(environment);
     }
 }

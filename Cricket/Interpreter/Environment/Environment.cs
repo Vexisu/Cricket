@@ -12,8 +12,7 @@ public class Environment {
         _parent = parent;
     }
 
-    public Environment() : this(null){
-    }
+    public Environment() : this(null) { }
 
     public bool CreateVariable(string name, DataType dataType, IExpression expression) {
         if (_variables.ContainsKey(name)) return false;
