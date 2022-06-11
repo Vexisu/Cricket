@@ -15,7 +15,7 @@ public class VariableStatement : IStatement {
         _expression = expression;
     }
 
-    public object Interpreter(Environment.Environment environment) {
+    public object Interpret(Environment.Environment environment) {
         environment.CreateVariable(_name, _type, _expression);
         return null;
     }

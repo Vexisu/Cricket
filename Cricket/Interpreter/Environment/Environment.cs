@@ -25,4 +25,8 @@ public class Environment {
     public IExpression GetVariable(string name) {
         return _variables[name].Expression;
     }
+
+    public DataType GetVariableType(string name) {
+        return _variables[name].DataType;
+    }
 }

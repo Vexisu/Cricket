@@ -31,7 +31,7 @@ public class ParserTest {
             var parser = new Parser(tokens);
             var statements = parser.ParseStatements();
             foreach (var statement in statements) {
-                statement.Interpreter(environment);
+                statement.Interpret(environment);
             }
         }
         catch (Exception e) {

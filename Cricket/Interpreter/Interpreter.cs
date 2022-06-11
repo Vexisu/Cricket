@@ -23,7 +23,7 @@ public class Interpreter {
             var statements = parser.ParseStatements();
             var resolver = new Resolver(statements);
             resolver.Resolve();
-            foreach (var statement in statements) statement.Interpreter(_environment);
+            foreach (var statement in statements) statement.Interpret(_environment);
         }
         catch (Exception e) {
             HandleException(e);

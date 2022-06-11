@@ -1,3 +1,5 @@
+using System;
+
 namespace Cricket.Interpreter.Parser.Statement.Expression;
 
 public class ValueExpression : IExpression {
@@ -9,7 +11,7 @@ public class ValueExpression : IExpression {
         _dataType = dataType;
     }
 
-    public object Interpreter(Environment.Environment environment) {
+    public object Interpret(Environment.Environment environment) {
         return _value;
     }
 

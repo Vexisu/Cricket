@@ -10,8 +10,8 @@ public class VariableExpression : IExpression {
         _name = name;
     }
 
-    public object Interpreter(Environment.Environment environment) {
-        return environment.GetVariable(_name).Interpreter(environment);
+    public object Interpret(Environment.Environment environment) {
+        return environment.GetVariable(_name).Interpret(environment);
     }
 
     public object Resolve(Resolver.ResolverEnvironment environment) {

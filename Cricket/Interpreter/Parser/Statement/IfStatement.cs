@@ -14,10 +14,10 @@ public class IfStatement : IStatement {
         _statements = statements;
     }
 
-    public object Interpreter(Environment.Environment environment) {
-        if (_condition.Interpreter(environment) is bool condition) {
+    public object Interpret(Environment.Environment environment) {
+        if (_condition.Interpret(environment) is bool condition) {
             if (!condition) return null;
-            foreach (var statement in _statements) statement.Interpreter(environment);
+            foreach (var statement in _statements) statement.Interpret(environment);
         }
         return null;
     }

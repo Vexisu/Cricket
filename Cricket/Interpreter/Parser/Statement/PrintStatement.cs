@@ -10,8 +10,8 @@ public class PrintStatement : IStatement {
         _expression = expression;
     }
 
-    public object Interpreter(Environment.Environment environment) {
-        Console.Out.WriteLine(_expression.Interpreter(environment));
+    public object Interpret(Environment.Environment environment) {
+        Console.Out.WriteLine(_expression.Interpret(environment));
         return null;
     }
 

@@ -26,9 +26,9 @@ public class BinaryExpression : IExpression {
         _right = right;
     }
 
-    public object Interpreter(Environment.Environment environment) {
-        var leftValue = (dynamic) _left.Interpreter(environment);
-        var rightValue = (dynamic) _right.Interpreter(environment);
+    public object Interpret(Environment.Environment environment) {
+        var leftValue = (dynamic) _left.Interpret(environment);
+        var rightValue = (dynamic) _right.Interpret(environment);
         return _type switch {
             ExpressionType.Addition => leftValue + rightValue,
             ExpressionType.Subtraction => leftValue - rightValue,

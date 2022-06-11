@@ -22,6 +22,9 @@ public class Parser {
             if (inner && Peek().Type == TokenType.RightBrace)
                 break;
             switch (Peek().Type) {
+                case TokenType.Func:
+                    statements.Add(ParseFunctionStatement());
+                    break;
                 case TokenType.Var:
                     statements.Add(ParseVariableStatement());
                     ExpectSemicolon();
@@ -85,6 +88,10 @@ public class Parser {
         return new VariableStatement(variableName, dataType, ParseExpression());
     }
 
+    private IStatement ParseFunctionStatement() {
+        throw new NotImplementedException();
+    }
+    
     /* Expressions */
 
     private IExpression ParseExpression() {
