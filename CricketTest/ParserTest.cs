@@ -16,7 +16,7 @@ public class ParserTest {
         cultureInfo.NumberFormat = NumberFormatInfo.InvariantInfo;
         Thread.CurrentThread.CurrentCulture = cultureInfo;
     }
-    
+
     [Test]
     public void TestValue() {
         try {
@@ -30,9 +30,7 @@ public class ParserTest {
             var tokens = scanner.Tokenize();
             var parser = new Parser(tokens);
             var statements = parser.ParseStatements();
-            foreach (var statement in statements) {
-                statement.Interpret(environment);
-            }
+            foreach (var statement in statements) statement.Interpret(environment);
         }
         catch (Exception e) {
             Interpreter.HandleException(e);

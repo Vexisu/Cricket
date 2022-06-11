@@ -4,5 +4,6 @@ public enum DataType {
     String,
     Integer,
     Float,
-    Boolean
+    Boolean,
+    Null
 }

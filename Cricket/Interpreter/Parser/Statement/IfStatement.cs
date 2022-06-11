@@ -16,22 +16,24 @@ public class IfStatement : IStatement {
 
     public object Interpret(Environment.Environment environment) {
         if (_condition.Interpret(environment) is bool condition) {
+            var scope = new Environment.Environment(environment);
             if (!condition) return null;
-            foreach (var statement in _statements) statement.Interpret(environment);
+            foreach (var statement in _statements) statement.Interpret(scope);
         }
         return null;
     }
+    
 
     public object Resolve(Resolver.ResolverEnvironment environment) {
         _condition.Resolve(environment);
         var returnedType = _condition.Returns(environment);
         if (returnedType == DataType.Boolean) {
-            foreach (var statement in _statements) {
-                statement.Resolve(environment);
-            }
+            var scope = new Resolver.ResolverEnvironment(environment);
+            foreach (var statement in _statements) statement.Resolve(scope);
         }
         else {
-            throw new ResolverError($"The expression of if's condition does not return Boolean. Present: {returnedType}");
+            throw new ResolverError(
+                $"The expression of if's condition does not return Boolean. Present: {returnedType}");
         }
         return null;
     }

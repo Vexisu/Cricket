@@ -24,7 +24,7 @@ public class VariableStatement : IStatement {
         if (Program.Debug) Console.Out.WriteLine($"Resolver: Defining {_name} ({_type}).");
         _expression.Resolve(environment);
         CheckTypeIntegrity(_expression.Returns(environment));
-        environment.Variables.Add(_name, _type);
+        environment.AddVariable(_name, _type);
         return null;
     }
 
@@ -45,6 +45,7 @@ public class VariableStatement : IStatement {
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        throw new ResolverError(@$"Value assigned to variable {_name} has different type than defined. Required: {_type}, present: {returnedType}.");
+        throw new ResolverError(
+            @$"Value assigned to variable {_name} has different type than defined. Required: {_type}, present: {returnedType}.");
     }
 }

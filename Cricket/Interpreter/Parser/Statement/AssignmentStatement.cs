@@ -18,10 +18,10 @@ public class AssignmentStatement : IStatement {
     }
 
     public object Resolve(Resolver.ResolverEnvironment environment) {
-        if (!environment.Variables.ContainsKey(_name)) {
+        if (!environment.VariableExists(_name)) {
             throw new ResolverError($"Variable {_name} does not exists.");
         }
-        var variableType = environment.Variables[_name];
+        var variableType = environment.VariableReturns(_name);
         var returnedType = _expression.Returns(environment);
         if (variableType != returnedType) {
             throw new ResolverError(@$"Value assigned to variable {_name} has different type than defined. Required: {variableType}, present: {returnedType}.");

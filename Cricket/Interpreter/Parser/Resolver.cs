@@ -1,14 +1,33 @@
 ﻿using System.Collections.Generic;
 using Cricket.Interpreter.Parser.Statement;
 
-namespace Cricket.Interpreter.Parser; 
+namespace Cricket.Interpreter.Parser;
 
 public class Resolver {
     public class ResolverEnvironment {
-        public readonly Dictionary<string, DataType> Variables;
+        private readonly Dictionary<string, DataType> _variables;
+        private readonly ResolverEnvironment _parent;
 
-        public ResolverEnvironment() {
-            Variables = new Dictionary<string, DataType>();
+        public ResolverEnvironment(ResolverEnvironment parent) {
+            _variables = new Dictionary<string, DataType>();
+            _parent = parent;
+        }
+
+        public ResolverEnvironment() : this(null) { }
+
+        public bool VariableExists(string name) {
+            if (_variables.ContainsKey(name)) {
+                return true;
+            }
+            return _parent?.VariableExists(name) ?? false;
+        }
+
+        public DataType VariableReturns(string name) {
+            return _variables.ContainsKey(name) ? _variables[name] : _parent.VariableReturns(name);
+        }
+
+        public void AddVariable(string name, DataType type) {
+            _variables[name] = type;
         }
     }
 
@@ -20,8 +39,6 @@ public class Resolver {
 
     public void Resolve() {
         var environment = new ResolverEnvironment();
-        foreach (var statement in _statements) {
-            statement.Resolve(environment);
-        }
+        foreach (var statement in _statements) statement.Resolve(environment);
     }
 }

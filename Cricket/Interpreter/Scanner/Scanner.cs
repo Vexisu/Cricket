@@ -77,10 +77,12 @@ public class Scanner {
                     NewToken(TokenType.RightParenthesis, current.ToString());
                     break;
                 case '=':
-                    if (Peek() == '=')
+                    if (Peek() == '=') {
                         NewToken(TokenType.EqualEqual, new string(new[] {current, Consume()}));
-                    else
+                    }
+                    else {
                         NewToken(TokenType.Equal, current.ToString());
+                    }
                     break;
                 case '<':
                     NewToken(TokenType.Less, current.ToString());
@@ -119,8 +121,9 @@ public class Scanner {
         while (!EndOfFile()) {
             if (!(char.IsDigit(Peek()) || Peek() == '.')) break;
             if (Peek() == '.') {
-                if (tokenType == TokenType.Integer)
+                if (tokenType == TokenType.Integer) {
                     tokenType = TokenType.Float;
+                }
                 else if (tokenType == TokenType.Float) break;
             }
             numeric += Consume();
