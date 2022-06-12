@@ -43,6 +43,12 @@ public class Parser {
         }
         return statements;
     }
+    
+    /* Statement identification helper */
+
+    private IStatement ParseIdentifierPrecededStatement() {
+        throw new NotImplementedException();
+    }
 
     /* Statements */
 
