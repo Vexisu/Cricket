@@ -6,7 +6,7 @@ using System.Threading;
 namespace Cricket;
 
 internal static class Program {
-    public static bool Debug = false;
+    public static bool Debug;
 
     private static void Main(string[] args) {
         HackDecimals();

@@ -1,7 +1,8 @@
+using System;
 using Cricket.Interpreter.Error;
 using Cricket.Interpreter.Parser.Statement.Expression;
 
-namespace Cricket.Interpreter.Parser.Statement; 
+namespace Cricket.Interpreter.Parser.Statement;
 
 public class AssignmentStatement : IStatement {
     private readonly IExpression _expression;
@@ -13,20 +14,18 @@ public class AssignmentStatement : IStatement {
     }
 
     public object Interpret(Environment.Environment environment) {
-        environment.UpdateVariable(_name, new ValueExpression(_expression.Interpret(environment), environment.GetVariableType(_name)));
+        environment.UpdateVariable(_name,
+            new ValueExpression(_expression.Interpret(environment), environment.GetVariableType(_name)));
         return null;
     }
 
     public object Resolve(Resolver.ResolverEnvironment environment) {
+        if (Program.Debug) Console.Out.WriteLine($"Resolver: Assigning {_name}.");
         if (!environment.VariableExists(_name)) {
             throw new ResolverError($"Variable {_name} does not exists.");
         }
-        var variableType = environment.VariableReturns(_name);
-        var returnedType = _expression.Returns(environment);
-        if (variableType != returnedType) {
-            throw new ResolverError(@$"Value assigned to variable {_name} has different type than defined. Required: {variableType}, present: {returnedType}.");
-        }
         _expression.Resolve(environment);
+        Resolver.CheckTypeIntegrity(_name, _expression.Returns(environment), environment.VariableReturns(_name));
         return null;
     }
 }

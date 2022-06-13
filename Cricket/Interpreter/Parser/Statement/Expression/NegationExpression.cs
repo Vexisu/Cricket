@@ -1,5 +1,3 @@
-using System;
-
 namespace Cricket.Interpreter.Parser.Statement.Expression;
 
 public class NegationExpression : IExpression {

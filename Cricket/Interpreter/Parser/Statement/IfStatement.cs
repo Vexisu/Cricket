@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Cricket.Interpreter.Error;
 using Cricket.Interpreter.Parser.Statement.Expression;
@@ -22,7 +21,6 @@ public class IfStatement : IStatement {
         }
         return null;
     }
-    
 
     public object Resolve(Resolver.ResolverEnvironment environment) {
         _condition.Resolve(environment);

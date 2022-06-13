@@ -23,6 +23,9 @@ public class Parser {
                 break;
             }
             switch (Peek().Type) {
+                case TokenType.Identifier:
+                    statements.Add(ParseIdentifierPrecededStatement());
+                    break;
                 case TokenType.Func:
                     statements.Add(ParseFunctionStatement());
                     break;
@@ -43,11 +46,18 @@ public class Parser {
         }
         return statements;
     }
-    
+
     /* Statement identification helper */
 
     private IStatement ParseIdentifierPrecededStatement() {
-        throw new NotImplementedException();
+        var identifier = Consume();
+        switch (Peek().Type) {
+            case TokenType.Equal:
+                return ParseAssignmentStatement(identifier);
+            default:
+                var current = Consume();
+                throw new UnexpectedSyntaxError(current.Line, current.Lexeme, "Operand");
+        }
     }
 
     /* Statements */
@@ -104,10 +114,17 @@ public class Parser {
         return new VariableStatement(variableName, dataType, ParseExpression());
     }
 
-    private IStatement ParseFunctionStatement() {
-        throw new NotImplementedException();
+    private IStatement ParseAssignmentStatement(Token identifier) {
+        Consume();
+        var statement = new AssignmentStatement(ParseExpression(), identifier.Lexeme);
+        ExpectSemicolon();
+        return statement;
     }
-    
+
+    private IStatement ParseFunctionStatement() {
+        throw new NotImplementedException("Parse function statement");
+    }
+
     /* Expressions */
 
     private IExpression ParseExpression() {
@@ -223,7 +240,6 @@ public class Parser {
 
     private IExpression ParseIdentifier() {
         var current = Consume();
-
         return new VariableExpression(current.Lexeme);
     }
 

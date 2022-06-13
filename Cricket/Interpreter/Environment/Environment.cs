@@ -4,8 +4,8 @@ using Cricket.Interpreter.Parser.Statement.Expression;
 namespace Cricket.Interpreter.Environment;
 
 public class Environment {
-    private readonly Dictionary<string, VariableWrapper> _variables;
     private readonly Environment _parent;
+    private readonly Dictionary<string, VariableWrapper> _variables;
 
     public Environment(Environment parent) {
         _variables = new Dictionary<string, VariableWrapper>();

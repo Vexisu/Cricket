@@ -1,5 +1,4 @@
 ﻿using System;
-using Cricket.Interpreter.Error;
 using Cricket.Interpreter.Parser.Statement.Expression;
 
 namespace Cricket.Interpreter.Parser.Statement;
@@ -16,36 +15,15 @@ public class VariableStatement : IStatement {
     }
 
     public object Interpret(Environment.Environment environment) {
-        environment.CreateVariable(_name, _type, _expression);
+        environment.CreateVariable(_name, _type, new ValueExpression(_expression.Interpret(environment), _type));
         return null;
     }
 
     public object Resolve(Resolver.ResolverEnvironment environment) {
         if (Program.Debug) Console.Out.WriteLine($"Resolver: Defining {_name} ({_type}).");
         _expression.Resolve(environment);
-        CheckTypeIntegrity(_expression.Returns(environment));
+        Resolver.CheckTypeIntegrity(_name, _expression.Returns(environment), _type);
         environment.AddVariable(_name, _type);
         return null;
-    }
-
-    private void CheckTypeIntegrity(DataType returnedType) {
-        switch (_type) {
-            case DataType.String:
-                if (returnedType == DataType.String) return;
-                break;
-            case DataType.Integer:
-                if (returnedType == DataType.Integer) return;
-                break;
-            case DataType.Float:
-                if (returnedType is DataType.Integer or DataType.Float) return;
-                break;
-            case DataType.Boolean:
-                if (returnedType == DataType.Boolean) return;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-        throw new ResolverError(
-            @$"Value assigned to variable {_name} has different type than defined. Required: {_type}, present: {returnedType}.");
     }
 }
