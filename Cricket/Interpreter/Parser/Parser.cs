@@ -50,6 +50,7 @@ public class Parser {
     /* Statement identification helper */
 
     private IStatement ParseIdentifierPrecededStatement() {
+        Log("IdentifierPreceded");
         var identifier = Consume();
         switch (Peek().Type) {
             case TokenType.Equal:
@@ -63,42 +64,37 @@ public class Parser {
     /* Statements */
 
     private IStatement ParsePrintStatement() {
+        Log("PrintStatement");
         Consume();
         return new PrintStatement(ParseExpression());
     }
 
     private IStatement ParseIfStatement() {
+        Log("IfStatement");
         Consume();
-        Expect(TokenType.LeftParenthesis, "(");
-        Consume();
+        ExpectAndConsume(TokenType.LeftParenthesis, "(");
         var condition = ParseExpression();
-        Expect(TokenType.RightParenthesis, ")");
-        Consume();
-        Expect(TokenType.LeftBrace, "{");
-        Consume();
+        ExpectAndConsume(TokenType.RightParenthesis, ")");
+        ExpectAndConsume(TokenType.LeftBrace, "{");
         var statements = ParseStatements(true);
-        Expect(TokenType.RightBrace, "}");
-        Consume();
+        ExpectAndConsume(TokenType.RightBrace, "}");
         return new IfStatement(condition, statements);
     }
 
     private IStatement ParseVariableStatement() {
+        Log("VariableStatement");
         Consume();
-        Expect(TokenType.Less, "<");
-        Consume();
-        if (CheckIfDataType(Peek())) {
-            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "data type");
-        }
-        var dataType = Enum.Parse<DataType>(Consume().Lexeme);
-        Expect(TokenType.Greater, ">");
-        Consume();
+        ExpectAndConsume(TokenType.Less, "<");
+        var dataType = ExpectDataTypeAndReturn();
+        ExpectAndConsume(TokenType.Greater, ">");
         Expect(TokenType.Identifier, "variable name");
         var variableName = Consume().Lexeme;
-        Expect(TokenType.Equal, "=");
+        ExpectAndConsume(TokenType.Equal, "=");
         return new VariableStatement(variableName, dataType, ParseExpression());
     }
 
     private IStatement ParseAssignmentStatement(Token identifier) {
+        Log("AssignmentStatement");
         Consume();
         var statement = new AssignmentStatement(ParseExpression(), identifier.Lexeme);
         ExpectSemicolon();
@@ -112,6 +108,7 @@ public class Parser {
     /* Expressions */
 
     private IExpression ParseExpression() {
+        Log("Expression");
         return Match(Peek(), TokenType.Integer, TokenType.Float, TokenType.True, TokenType.False, TokenType.Identifier,
             TokenType.LeftParenthesis, TokenType.Minus)
             ? ParseComparison()
@@ -184,11 +181,9 @@ public class Parser {
 
     private IExpression ParseParenthesis() {
         if (!PeekMatch(TokenType.LeftParenthesis, TokenType.RightParenthesis)) return ParseUnary();
-        Expect(TokenType.LeftParenthesis, "(");
-        Consume();
+        ExpectAndConsume(TokenType.LeftParenthesis, "(");
         var expression = ParseTerm();
-        Expect(TokenType.RightParenthesis, ")");
-        Consume();
+        ExpectAndConsume(TokenType.RightParenthesis, ")");
         return expression;
     }
 
@@ -223,16 +218,19 @@ public class Parser {
     }
 
     private IExpression ParseVariableIdentifier() {
-        var current = Consume();
-        return new VariableExpression(current.Lexeme);
+        return new VariableExpression(Consume().Lexeme);
     }
 
     /* Helpers */
 
-    private bool CheckIfDataType(Token token) {
-        return token.Type != TokenType.Identifier || !Enum.IsDefined(typeof(DataType), token.Lexeme);
+    private DataType ExpectDataTypeAndReturn() {
+        var token = Consume();
+        if (token.Type == TokenType.Identifier && Enum.IsDefined(typeof(DataType), token.Lexeme)) {
+            return Enum.Parse<DataType>(token.Lexeme);
+        }
+        throw new UnexpectedSyntaxError(token.Line, token.Lexeme, "data type");
     }
-
+    
     private void ExpectSemicolon() {
         if (Peek() == null) {
             throw new UnexpectedSyntaxError(_tokens[^1].Line, _tokens[^1].Lexeme, ";");
@@ -242,6 +240,14 @@ public class Parser {
         }
         Consume();
     }
+    
+    private void ExpectAndConsume(TokenType type, string lexeme) {
+        var token = Consume();
+        if (token.Type != type) {
+            throw new UnexpectedSyntaxError(token.Line, token.Lexeme, lexeme);
+        }
+    }
+
 
     private void Expect(TokenType type, string lexeme) {
         if (Peek().Type != type) {
@@ -278,5 +284,10 @@ public class Parser {
 
     private bool EndOfFile() {
         return _index >= _tokens.Count;
+    }
+
+    private void Log(string logType) {
+        var current = _tokens[_index];
+        Console.Out.WriteLine($"Parser: {current.Line + 1}:{logType} around {current.Lexeme} ");
     }
 }
