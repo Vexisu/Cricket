@@ -56,7 +56,7 @@ public class Parser {
                 return ParseAssignmentStatement(identifier);
             default:
                 var current = Consume();
-                throw new UnexpectedSyntaxError(current.Line, current.Lexeme, "Operand");
+                throw new UnexpectedSyntaxError(current.Line, current.Lexeme, "operand");
         }
     }
 
@@ -69,48 +69,32 @@ public class Parser {
 
     private IStatement ParseIfStatement() {
         Consume();
-        if (Peek().Type != TokenType.LeftParenthesis) {
-            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "(");
-        }
+        Expect(TokenType.LeftParenthesis, "(");
         Consume();
         var condition = ParseExpression();
-        if (Peek().Type != TokenType.RightParenthesis) {
-            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, ")");
-        }
+        Expect(TokenType.RightParenthesis, ")");
         Consume();
-        if (Peek().Type != TokenType.LeftBrace) {
-            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "{");
-        }
+        Expect(TokenType.LeftBrace, "{");
         Consume();
         var statements = ParseStatements(true);
-        if (Peek().Type != TokenType.RightBrace) {
-            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "}");
-        }
+        Expect(TokenType.RightBrace, "}");
         Consume();
         return new IfStatement(condition, statements);
     }
 
     private IStatement ParseVariableStatement() {
         Consume();
-        if (Peek().Type != TokenType.Less) {
-            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "<");
-        }
+        Expect(TokenType.Less, "<");
         Consume();
-        if (Peek().Type != TokenType.Identifier || !Enum.IsDefined(typeof(DataType), Peek().Lexeme)) {
+        if (CheckIfDataType(Peek())) {
             throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "data type");
         }
         var dataType = Enum.Parse<DataType>(Consume().Lexeme);
-        if (Peek().Type != TokenType.Greater) {
-            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, ">");
-        }
+        Expect(TokenType.Greater, ">");
         Consume();
-        if (Peek().Type != TokenType.Identifier) {
-            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "variable name");
-        }
+        Expect(TokenType.Identifier, "variable name");
         var variableName = Consume().Lexeme;
-        if (Consume().Type != TokenType.Equal) {
-            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "=");
-        }
+        Expect(TokenType.Equal, "=");
         return new VariableStatement(variableName, dataType, ParseExpression());
     }
 
@@ -137,79 +121,79 @@ public class Parser {
     private IExpression ParseComparison() {
         var expression = ParseTerm();
         while (Match(Peek(), TokenType.EqualEqual, TokenType.Greater, TokenType.Less, TokenType.GreaterEqual,
-                   TokenType.LessEqual))
-            if (Peek().Type == TokenType.EqualEqual) {
-                Consume();
-                expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Equal, ParseTerm());
+                   TokenType.LessEqual)) {
+            var tokenType = Consume().Type;
+            switch (tokenType) {
+                case TokenType.EqualEqual:
+                    expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Equal, ParseTerm());
+                    break;
+                case TokenType.Greater:
+                    expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Greater, ParseTerm());
+                    break;
+                case TokenType.Less:
+                    expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Less, ParseTerm());
+                    break;
+                case TokenType.GreaterEqual:
+                    expression =
+                        new BinaryExpression(expression, BinaryExpression.ExpressionType.GreaterEqual, ParseTerm());
+                    break;
+                case TokenType.LessEqual:
+                    expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.LessEqual,
+                        ParseTerm());
+                    break;
             }
-            else if (Peek().Type == TokenType.Greater) {
-                Consume();
-                expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Greater, ParseTerm());
-            }
-            else if (Peek().Type == TokenType.Less) {
-                Consume();
-                expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Less, ParseTerm());
-            }
-            else if (Peek().Type == TokenType.GreaterEqual) {
-                Consume();
-                expression =
-                    new BinaryExpression(expression, BinaryExpression.ExpressionType.GreaterEqual, ParseTerm());
-            }
-            else if (Peek().Type == TokenType.LessEqual) {
-                Consume();
-                expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.LessEqual, ParseTerm());
-            }
+        }
         return expression;
     }
 
     private IExpression ParseTerm() {
         var expression = ParseFactor();
-        while (Match(Peek(), TokenType.Plus, TokenType.Minus))
-            if (Peek().Type == TokenType.Plus) {
-                Consume();
-                expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Addition,
-                    ParseFactor());
+        while (PeekMatch(TokenType.Plus, TokenType.Minus)) {
+            var tokenType = Consume().Type;
+            switch (tokenType) {
+                case TokenType.Plus:
+                    expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Addition,
+                        ParseFactor());
+                    break;
+                case TokenType.Minus:
+                    expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Subtraction,
+                        ParseFactor());
+                    break;
             }
-            else if (Peek().Type == TokenType.Minus) {
-                Consume();
-                expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Subtraction,
-                    ParseFactor());
-            }
+        }
         return expression;
     }
 
     private IExpression ParseFactor() {
         var expression = ParseParenthesis();
-        while (Match(Peek(), TokenType.Asterisk, TokenType.Slash))
-            if (Peek().Type == TokenType.Asterisk) {
-                Consume();
-                expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Multiplication,
-                    ParseParenthesis());
+        while (PeekMatch(TokenType.Asterisk, TokenType.Slash)) {
+            var tokenType = Consume().Type;
+            switch (tokenType) {
+                case TokenType.Asterisk:
+                    expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Multiplication,
+                        ParseParenthesis());
+                    break;
+                case TokenType.Slash:
+                    expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Division,
+                        ParseParenthesis());
+                    break;
             }
-            else if (Peek().Type == TokenType.Slash) {
-                Consume();
-                expression = new BinaryExpression(expression, BinaryExpression.ExpressionType.Division,
-                    ParseParenthesis());
-            }
+        }
         return expression;
     }
 
     private IExpression ParseParenthesis() {
-        if (!Match(Peek(), TokenType.LeftParenthesis, TokenType.RightParenthesis)) return ParseUnary();
-        if (!Match(Peek(), TokenType.LeftParenthesis)) {
-            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "(");
-        }
+        if (!PeekMatch(TokenType.LeftParenthesis, TokenType.RightParenthesis)) return ParseUnary();
+        Expect(TokenType.LeftParenthesis, "(");
         Consume();
         var expression = ParseTerm();
-        if (!Match(Peek(), TokenType.RightParenthesis)) {
-            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, ")");
-        }
+        Expect(TokenType.RightParenthesis, ")");
         Consume();
         return expression;
     }
 
     private IExpression ParseUnary() {
-        if (Peek().Type == TokenType.Minus) {
+        if (PeekMatch(TokenType.Minus)) {
             Consume();
             return new NegationExpression(ParseParenthesis());
         }
@@ -223,7 +207,7 @@ public class Parser {
             case TokenType.Float:
                 return new ValueExpression(float.Parse(Consume().Lexeme), DataType.Float);
             case TokenType.Identifier:
-                return ParseIdentifier();
+                return ParseVariableIdentifier();
             case TokenType.String:
                 return new ValueExpression(Consume().Lexeme, DataType.String);
             case TokenType.True:
@@ -234,23 +218,39 @@ public class Parser {
                 return new ValueExpression(false, DataType.Boolean);
             default:
                 var current = Consume();
-                throw new UnexpectedSyntaxError(current.Line, current.Lexeme, "Value");
+                throw new UnexpectedSyntaxError(current.Line, current.Lexeme, "value");
         }
     }
 
-    private IExpression ParseIdentifier() {
+    private IExpression ParseVariableIdentifier() {
         var current = Consume();
         return new VariableExpression(current.Lexeme);
     }
 
+    /* Helpers */
+
+    private bool CheckIfDataType(Token token) {
+        return token.Type != TokenType.Identifier || !Enum.IsDefined(typeof(DataType), token.Lexeme);
+    }
+
     private void ExpectSemicolon() {
-        if (Peek() != null && !Match(Peek(), TokenType.Semicolon)) {
-            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, ";");
-        }
         if (Peek() == null) {
             throw new UnexpectedSyntaxError(_tokens[^1].Line, _tokens[^1].Lexeme, ";");
         }
+        if (!Match(Peek(), TokenType.Semicolon)) {
+            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, ";");
+        }
         Consume();
+    }
+
+    private void Expect(TokenType type, string lexeme) {
+        if (Peek().Type != type) {
+            throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, lexeme);
+        }
+    }
+
+    private bool PeekMatch(params TokenType[] tokenTypes) {
+        return Peek() != null && tokenTypes.Any(tokenType => Peek().Type == tokenType);
     }
 
     private static bool Match(Token token, params TokenType[] tokenTypes) {
