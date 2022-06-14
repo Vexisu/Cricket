@@ -102,6 +102,19 @@ public class Parser {
     }
 
     private IStatement ParseFunctionStatement() {
+        Log("FunctionStatement");
+        Consume();
+        Expect(TokenType.Identifier, "function name");
+        var functionIdentifier = Consume().Lexeme;
+        Expect(TokenType.LeftParenthesis, "(");
+        if (PeekMatch(TokenType.Identifier)) {
+            do {
+                Consume();
+                var variableType = ExpectDataTypeAndReturn();
+                
+            } while (PeekMatch(TokenType.Comma));
+        }
+
         throw new NotImplementedException("Parse function statement");
     }
 
