@@ -243,7 +243,7 @@ public class Parser {
         }
         throw new UnexpectedSyntaxError(token.Line, token.Lexeme, "data type");
     }
-    
+
     private void ExpectSemicolon() {
         if (Peek() == null) {
             throw new UnexpectedSyntaxError(_tokens[^1].Line, _tokens[^1].Lexeme, ";");
@@ -253,14 +253,13 @@ public class Parser {
         }
         Consume();
     }
-    
+
     private void ExpectAndConsume(TokenType type, string lexeme) {
         var token = Consume();
         if (token.Type != type) {
             throw new UnexpectedSyntaxError(token.Line, token.Lexeme, lexeme);
         }
     }
-
 
     private void Expect(TokenType type, string lexeme) {
         if (Peek().Type != type) {
@@ -300,6 +299,7 @@ public class Parser {
     }
 
     private void Log(string logType) {
+        if (!Program.Debug) return;
         var current = _tokens[_index];
         Console.Out.WriteLine($"Parser: {current.Line + 1}:{logType} around {current.Lexeme} ");
     }

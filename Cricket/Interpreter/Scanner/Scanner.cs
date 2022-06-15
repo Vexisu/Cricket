@@ -106,11 +106,11 @@ public class Scanner {
     }
 
     private char Consume() {
-        if (_source[_line].Length == _index) {
+        if (_index >= _source[_line].Length) {
             _index = 0;
             _line++;
         }
-        var character = _source[_line][_index];
+        var character = _source[_line].Length > 0 ? _source[_line][_index] : ' ';
         _index++;
         return character;
     }
@@ -146,10 +146,10 @@ public class Scanner {
     }
 
     private char Peek() {
-        return _index < _source[_line].Length ? _source[_line][_index] : _source[_line + 1][0];
+        return _index < _source[_line].Length ? _source[_line][_index] : _source[_line+1].Length > 0 ? _source[_line + 1][0] : ' ';
     }
 
     private bool EndOfFile() {
-        return _line == _source.Length - 1 && _index == _source[_line].Length;
+        return _line == _source.Length - 1 && _index >= _source[_line].Length;
     }
 }
