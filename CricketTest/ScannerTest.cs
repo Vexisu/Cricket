@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cricket.Interpreter;
 using Cricket.Interpreter.Error;
 using Cricket.Interpreter.Scanner;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 using NUnit.Framework;
 
 namespace CricketTest;
@@ -27,5 +28,11 @@ public class ScannerTest {
             new(TokenType.Asterisk, "*", 0), new(TokenType.Integer, "31", 0), new(TokenType.EqualEqual, "==", 0),
             new(TokenType.False, "false", 0)
         }, tokens);
+    }
+
+    [Test]
+    public void RandomTest() {
+        var interpreter = new Interpreter("enter_me.chirp");
+        interpreter.StartInterpreter();
     }
 }

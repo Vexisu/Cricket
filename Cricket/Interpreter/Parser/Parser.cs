@@ -27,6 +27,10 @@ public class Parser {
                     statements.Add(ParseIdentifierPrecededStatement());
                     break;
                 case TokenType.Func:
+                    if (inner) {
+                        throw new DisallowedSyntaxError(
+                            $"{Peek().Line}: Function definition is not allowed in this scope.");
+                    }
                     statements.Add(ParseFunctionStatement());
                     break;
                 case TokenType.Var:
@@ -105,17 +109,19 @@ public class Parser {
         Log("FunctionStatement");
         Consume();
         Expect(TokenType.Identifier, "function name");
-        var functionIdentifier = Consume().Lexeme;
+        var functionName = Consume().Lexeme;
         Expect(TokenType.LeftParenthesis, "(");
+        Dictionary<string, DataType> arguments = new Dictionary<string, DataType>();
         if (PeekMatch(TokenType.Identifier)) {
             do {
                 Consume();
-                var variableType = ExpectDataTypeAndReturn();
-                
+                var argumentType = ExpectDataTypeAndReturn();
+                Expect(TokenType.Identifier, "argument name");
+                var argumentName = Consume().Lexeme;
+                arguments[argumentName] = argumentType;
             } while (PeekMatch(TokenType.Comma));
         }
-
-        throw new NotImplementedException("Parse function statement");
+        return new FunctionStatement(functionName, arguments, ParseStatements(true));
     }
 
     /* Expressions */

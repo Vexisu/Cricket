@@ -41,6 +41,9 @@ public class Interpreter {
             case UnexpectedEndOfFileError:
                 Console.Out.WriteLine("Unexpected end of file error.");
                 break;
+            case DisallowedSyntaxError error:
+                Console.Out.WriteLine(error.Message);
+                break;
             case ResolverError error:
                 Console.Out.WriteLine(error.Message);
                 break;
