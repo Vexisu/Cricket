@@ -146,7 +146,8 @@ public class Scanner {
     }
 
     private char Peek() {
-        return _index < _source[_line].Length ? _source[_line][_index] : _source[_line+1].Length > 0 ? _source[_line + 1][0] : ' ';
+        return _index < _source[_line].Length ? _source[_line][_index] :
+            _source[_line + 1].Length > 0 ? _source[_line + 1][0] : ' ';
     }
 
     private bool EndOfFile() {

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Cricket.Interpreter.Parser.Statement;
 using Cricket.Interpreter.Parser.Statement.Expression;
@@ -6,10 +5,10 @@ using Cricket.Interpreter.Parser.Statement.Expression;
 namespace Cricket.Interpreter.Environment;
 
 public class Environment {
-    private readonly Environment _parent;
-    private readonly Dictionary<string, VariableWrapper> _variables;
     private readonly List<FunctionStatement> _functions;
+    private readonly Environment _parent;
     private readonly Stack<IExpression> _stack;
+    private readonly Dictionary<string, VariableWrapper> _variables;
 
     public Environment(Environment parent) {
         _variables = new Dictionary<string, VariableWrapper>();
@@ -48,28 +47,24 @@ public class Environment {
     }
 
     //TODO: Implement function creation.
-    public void CreateFunction(string name) {
-        
-    }
+    public void CreateFunction(string name) { }
 
     public void CallFunction(string name, List<DataType> argumentsType) {
-        foreach (var function in _functions) {
+        foreach (var function in _functions)
             if (function.Name == name && CompareFunctionVariables(function, argumentsType)) {
                 function.Call(this);
                 return;
             }
-        }
     }
 
     private bool CompareFunctionVariables(FunctionStatement function, List<DataType> argumentsType) {
         if (argumentsType.Count != function.Arguments.Count) {
             return false;
         }
-        for (var i = 0; i < argumentsType.Count; i++) {
+        for (var i = 0; i < argumentsType.Count; i++)
             if (argumentsType[i] != function.Arguments[i].Type) {
                 return false;
             }
-        }
         return true;
     }
 

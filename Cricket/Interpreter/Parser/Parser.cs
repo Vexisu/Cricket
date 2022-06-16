@@ -112,7 +112,7 @@ public class Parser {
         Expect(TokenType.Identifier, "function name");
         var functionName = Consume().Lexeme;
         ExpectAndConsume(TokenType.LeftParenthesis, "(");
-        List<FunctionStatement.FunctionArgument> arguments = new List<FunctionStatement.FunctionArgument>();
+        var arguments = new List<FunctionStatement.FunctionArgument>();
         if (PeekMatch(TokenType.Identifier)) {
             do {
                 var argumentType = ExpectDataTypeAndReturn();
