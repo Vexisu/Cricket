@@ -105,23 +105,27 @@ public class Parser {
         return statement;
     }
 
+    //TODO: Add support for variable returning notation.
     private IStatement ParseFunctionStatement() {
         Log("FunctionStatement");
         Consume();
         Expect(TokenType.Identifier, "function name");
         var functionName = Consume().Lexeme;
-        Expect(TokenType.LeftParenthesis, "(");
-        Dictionary<string, DataType> arguments = new Dictionary<string, DataType>();
+        ExpectAndConsume(TokenType.LeftParenthesis, "(");
+        List<FunctionStatement.FunctionArgument> arguments = new List<FunctionStatement.FunctionArgument>();
         if (PeekMatch(TokenType.Identifier)) {
             do {
-                Consume();
                 var argumentType = ExpectDataTypeAndReturn();
                 Expect(TokenType.Identifier, "argument name");
                 var argumentName = Consume().Lexeme;
-                arguments[argumentName] = argumentType;
+                arguments.Add(new FunctionStatement.FunctionArgument(argumentName, argumentType));
             } while (PeekMatch(TokenType.Comma));
         }
-        return new FunctionStatement(functionName, arguments, ParseStatements(true));
+        ExpectAndConsume(TokenType.RightParenthesis, ")");
+        ExpectAndConsume(TokenType.LeftBrace, "{");
+        var statements = ParseStatements(true);
+        ExpectAndConsume(TokenType.RightBrace, "}");
+        return new FunctionStatement(functionName, arguments, statements, DataType.Null);
     }
 
     /* Expressions */

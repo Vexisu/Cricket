@@ -1,25 +1,50 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Cricket.Interpreter.Parser.Statement;
 
 public class FunctionStatement : IStatement {
-    
-    private string _name;
-    private Dictionary<string, DataType> _arguments;
+    public string Name { get; }
+    public List<FunctionArgument> Arguments { get; }
+    private DataType _returns;
     private List<IStatement> _statements;
 
-    public FunctionStatement(string name, Dictionary<string, DataType> arguments, List<IStatement> statements) {
-        _name = name;
-        _arguments = arguments;
+    public FunctionStatement(string name, List<FunctionArgument> arguments, List<IStatement> statements,
+        DataType returns) {
+        Name = name;
+        Arguments = arguments;
+        _returns = returns;
         _statements = statements;
     }
 
     public object Interpret(Environment.Environment environment) {
-        throw new NotImplementedException();
+        return null;
     }
 
+    public void Call(Environment.Environment environment) {
+        var localEnvironment = new Environment.Environment(environment.GetGlobal());
+        for (var i = Arguments.Count - 1; i >=0; i--) {
+            var argumentExpression = environment.PopFromStack();
+            localEnvironment.CreateVariable(Arguments[i].Name, Arguments[i].Type, argumentExpression);
+        }
+        foreach (var statement in _statements) {
+            statement.Interpret(localEnvironment);
+        }
+    }
+
+    //TODO: Implement resolver for function statement.
     public object Resolve(Resolver.ResolverEnvironment environment) {
-        throw new NotImplementedException();
+        return null;
+    }
+
+    public class FunctionArgument {
+        public string Name { get; }
+        public DataType Type { get; }
+
+        public FunctionArgument(string name, DataType type) {
+            Name = name;
+            Type = type;
+        }
     }
 }
