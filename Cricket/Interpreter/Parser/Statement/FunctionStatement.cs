@@ -7,8 +7,8 @@ namespace Cricket.Interpreter.Parser.Statement;
 public class FunctionStatement : IStatement {
     public string Name { get; }
     public List<FunctionArgument> Arguments { get; }
-    private DataType _returns;
-    private List<IStatement> _statements;
+    private readonly DataType _returns;
+    private readonly List<IStatement> _statements;
 
     public FunctionStatement(string name, List<FunctionArgument> arguments, List<IStatement> statements,
         DataType returns) {
