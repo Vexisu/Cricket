@@ -17,12 +17,17 @@ public class FunctionStatement : IStatement {
     public string Name { get; }
     public List<FunctionArgument> Arguments { get; }
 
+    //TODO: Implement interpreting phase for function statement.
     public object Interpret(Environment.Environment environment) {
+        environment.CreateFunction(this);
         return null;
     }
 
     //TODO: Implement resolver for function statement.
     public object Resolve(Resolver.ResolverEnvironment environment) {
+        var argumentsType = new List<DataType>();
+        Arguments.ForEach(argument => argumentsType.Add(argument.Type));
+        environment.AddFunction(Name, argumentsType, _returns);
         return null;
     }
 

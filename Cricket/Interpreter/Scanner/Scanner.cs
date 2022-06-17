@@ -55,6 +55,9 @@ public class Scanner {
                     break;
                 case '\u0009':
                     break;
+                case ',':
+                    NewToken(TokenType.Comma, current.ToString());
+                    break;
                 case '+':
                     NewToken(TokenType.Plus, current.ToString());
                     break;

@@ -13,6 +13,7 @@ public class Environment {
     public Environment(Environment parent) {
         _variables = new Dictionary<string, VariableWrapper>();
         _parent = parent;
+        _functions = parent == null ? new List<FunctionStatement>() : parent._functions;
         _stack = parent == null ? new Stack<IExpression>() : parent._stack;
     }
 
@@ -47,14 +48,16 @@ public class Environment {
     }
 
     //TODO: Implement function creation.
-    public void CreateFunction(string name) { }
+    public void CreateFunction(FunctionStatement statement) {
+        _functions.Add(statement);
+    }
 
     public void CallFunction(string name, List<DataType> argumentsType) {
-        foreach (var function in _functions)
-            if (function.Name == name && CompareFunctionVariables(function, argumentsType)) {
-                function.Call(this);
-                return;
-            }
+        foreach (var function in _functions) {
+            if (function.Name != name || !CompareFunctionVariables(function, argumentsType)) continue;
+            function.Call(this);
+            return;
+        }
     }
 
     private bool CompareFunctionVariables(FunctionStatement function, List<DataType> argumentsType) {

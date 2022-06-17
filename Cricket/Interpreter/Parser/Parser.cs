@@ -25,6 +25,7 @@ public class Parser {
             switch (Peek().Type) {
                 case TokenType.Identifier:
                     statements.Add(ParseIdentifierPrecededStatement());
+                    ExpectSemicolon();
                     break;
                 case TokenType.Func:
                     if (inner) {
@@ -58,7 +59,9 @@ public class Parser {
         var identifier = Consume();
         switch (Peek().Type) {
             case TokenType.Equal:
-                return ParseAssignmentStatement(identifier);
+                return ParseAssignmentStatement(identifier.Lexeme);
+            case TokenType.LeftParenthesis:
+                return ParseFunctionCall(identifier.Lexeme);
             default:
                 var current = Consume();
                 throw new UnexpectedSyntaxError(current.Line, current.Lexeme, "operand");
@@ -97,12 +100,10 @@ public class Parser {
         return new VariableStatement(variableName, dataType, ParseExpression());
     }
 
-    private IStatement ParseAssignmentStatement(Token identifier) {
+    private IStatement ParseAssignmentStatement(string identifier) {
         Log("AssignmentStatement");
         Consume();
-        var statement = new AssignmentStatement(ParseExpression(), identifier.Lexeme);
-        ExpectSemicolon();
-        return statement;
+        return new AssignmentStatement(ParseExpression(), identifier);
     }
 
     //TODO: Add support for variable returning notation.
@@ -119,7 +120,7 @@ public class Parser {
                 Expect(TokenType.Identifier, "argument name");
                 var argumentName = Consume().Lexeme;
                 arguments.Add(new FunctionStatement.FunctionArgument(argumentName, argumentType));
-            } while (PeekMatch(TokenType.Comma));
+            } while (PeekMatchAndConsume(TokenType.Comma));
         }
         ExpectAndConsume(TokenType.RightParenthesis, ")");
         ExpectAndConsume(TokenType.LeftBrace, "{");
@@ -225,7 +226,7 @@ public class Parser {
             case TokenType.Float:
                 return new ValueExpression(float.Parse(Consume().Lexeme), DataType.Float);
             case TokenType.Identifier:
-                return ParseVariableIdentifier();
+                return ParseIdentifierPrecededExpression();
             case TokenType.String:
                 return new ValueExpression(Consume().Lexeme, DataType.String);
             case TokenType.True:
@@ -238,6 +239,29 @@ public class Parser {
                 var current = Consume();
                 throw new UnexpectedSyntaxError(current.Line, current.Lexeme, "value");
         }
+    }
+
+    private IExpression ParseIdentifierPrecededExpression() {
+        if (PeekMatch(TokenType.LeftParenthesis)) {
+            return ParseFunctionCall();
+        }
+        return ParseVariableIdentifier();
+    }
+
+    private IExpression ParseFunctionCall(string functionName = null) {
+        if (functionName == null) {
+            Expect(TokenType.Identifier, "called function name");
+            functionName = Consume().Lexeme;
+        }
+        ExpectAndConsume(TokenType.LeftParenthesis, "(");
+        var arguments = new List<IExpression>();
+        if (!PeekMatch(TokenType.RightParenthesis)) {
+            do {
+                arguments.Add(ParseExpression());
+            } while (PeekMatchAndConsume(TokenType.Comma));
+        }
+        ExpectAndConsume(TokenType.RightParenthesis, ")");
+        return new CallExpression(functionName, arguments);
     }
 
     private IExpression ParseVariableIdentifier() {
@@ -275,6 +299,12 @@ public class Parser {
         if (Peek().Type != type) {
             throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, lexeme);
         }
+    }
+
+    private bool PeekMatchAndConsume(params TokenType[] tokenTypes) {
+        if (Peek() == null || tokenTypes.All(tokenType => Peek().Type != tokenType)) return false;
+        Consume();
+        return true;
     }
 
     private bool PeekMatch(params TokenType[] tokenTypes) {
