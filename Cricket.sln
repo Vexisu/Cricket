@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cricket", "Cricket\Cricket.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CricketTest", "CricketTest\CricketTest.csproj", "{FC4FC987-8034-4118-84FE-08B65F7CBE8C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CricketBootstrap", "CricketBootstrap\CricketBootstrap.csproj", "{DF62C82A-9A5F-4B86-BCE1-EE4A2943D475}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{FC4FC987-8034-4118-84FE-08B65F7CBE8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC4FC987-8034-4118-84FE-08B65F7CBE8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC4FC987-8034-4118-84FE-08B65F7CBE8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF62C82A-9A5F-4B86-BCE1-EE4A2943D475}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF62C82A-9A5F-4B86-BCE1-EE4A2943D475}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF62C82A-9A5F-4B86-BCE1-EE4A2943D475}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF62C82A-9A5F-4B86-BCE1-EE4A2943D475}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
