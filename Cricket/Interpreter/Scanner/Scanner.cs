@@ -44,6 +44,9 @@ public class Scanner {
                     case "func":
                         NewToken(TokenType.Func, consumedString);
                         break;
+                    case "return":
+                        NewToken(TokenType.Return, consumedString);
+                        break;
                     default:
                         NewToken(TokenType.Identifier, consumedString);
                         break;

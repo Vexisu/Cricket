@@ -47,6 +47,12 @@ public class Interpreter {
             case ResolverError error:
                 Console.Out.WriteLine(error.Message);
                 break;
+            case InvalidReturnStatementError error:
+                Console.Out.WriteLine(error.Message);
+                break;
+            case MissingReturnStatementError error:
+                Console.Out.WriteLine(error.Message);
+                break;
             default:
                 Console.Out.WriteLine(exception.ToString());
                 break;

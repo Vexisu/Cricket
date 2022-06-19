@@ -38,6 +38,7 @@ public enum TokenType {
     Var,
     If,
     While,
+    Return,
 
     // Debug tokens (temporary)
     Print

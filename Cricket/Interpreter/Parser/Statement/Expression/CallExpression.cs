@@ -5,9 +5,10 @@ using Cricket.Interpreter.Error;
 namespace Cricket.Interpreter.Parser.Statement.Expression;
 
 public class CallExpression : IExpression {
-    private string _calledFunction;
-    private List<IExpression> _arguments;
-    private List<DataType> _argumentsType;
+    private readonly string _calledFunction;
+    private readonly List<IExpression> _arguments;
+    private readonly List<DataType> _argumentsType;
+    private DataType _functionReturns;
 
     public CallExpression(string calledFunction, List<IExpression> arguments) {
         _calledFunction = calledFunction;
@@ -20,7 +21,7 @@ public class CallExpression : IExpression {
             environment.PutOnStack(new ValueExpression(_arguments[i].Interpret(environment), _argumentsType[i]));
         }
         environment.CallFunction(_calledFunction, _argumentsType);
-        return null;
+        return _functionReturns != DataType.Null ? environment.PopFromStack().Interpret(environment) : null;
     }
 
     public object Resolve(Resolver.ResolverEnvironment environment) {
@@ -28,11 +29,14 @@ public class CallExpression : IExpression {
             argument.Resolve(environment);
             _argumentsType.Add(argument.Returns(environment));
         }
+        var argumentsTypeName = new List<string>();
+        _argumentsType.ForEach(type => argumentsTypeName.Add(Enum.GetName(type)));
+        if (Program.Debug) Console.Out.WriteLine($"Resolver: Resolving for function {_calledFunction}({string.Join(", ", argumentsTypeName)}).");
         if (!environment.FunctionExists(_calledFunction, _argumentsType)) {
-            var argumentsTypeName = new List<string>();
-            _argumentsType.ForEach(type => argumentsTypeName.Add(Enum.GetName(type)));
-            throw new ResolverError($"Called function {_calledFunction}({string.Join(", ", argumentsTypeName)}) does not exists.");
+            throw new ResolverError(
+                $"Called function {_calledFunction}({string.Join(", ", argumentsTypeName)}) does not exists.");
         }
+        _functionReturns = Returns(environment);
         return null;
     }
 

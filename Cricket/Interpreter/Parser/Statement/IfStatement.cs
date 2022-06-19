@@ -17,7 +17,12 @@ public class IfStatement : IStatement {
         if (_condition.Interpret(environment) is bool condition) {
             var scope = new Environment.Environment(environment);
             if (!condition) return null;
-            foreach (var statement in _statements) statement.Interpret(scope);
+            foreach (var statement in _statements) {
+                var returned = statement.Interpret(scope);
+                if (returned != null) {
+                    return returned;
+                }
+            }
         }
         return null;
     }

@@ -41,6 +41,14 @@ public class Parser {
                 case TokenType.If:
                     statements.Add(ParseIfStatement());
                     break;
+                case TokenType.Return:
+                    if (!inner) {
+                        throw new DisallowedSyntaxError(
+                            $"{Peek().Line}: Return statement is not allowed outside a function.");
+                    }
+                    statements.Add(ParseReturnStatement());
+                    ExpectSemicolon();
+                    break;
                 case TokenType.Print:
                     statements.Add(ParsePrintStatement());
                     ExpectSemicolon();
@@ -110,6 +118,12 @@ public class Parser {
     private IStatement ParseFunctionStatement() {
         Log("FunctionStatement");
         Consume();
+        var returnedType = DataType.Null;
+        if (PeekMatch(TokenType.Less)) {
+            Consume();
+            returnedType = ExpectDataTypeAndReturn();
+            ExpectAndConsume(TokenType.Greater, ">");
+        }
         Expect(TokenType.Identifier, "function name");
         var functionName = Consume().Lexeme;
         ExpectAndConsume(TokenType.LeftParenthesis, "(");
@@ -126,7 +140,13 @@ public class Parser {
         ExpectAndConsume(TokenType.LeftBrace, "{");
         var statements = ParseStatements(true);
         ExpectAndConsume(TokenType.RightBrace, "}");
-        return new FunctionStatement(functionName, arguments, statements, DataType.Null);
+        return new FunctionStatement(functionName, arguments, statements, returnedType);
+    }
+
+    private IStatement ParseReturnStatement() {
+        Log("ReturnStatement");
+        Consume();
+        return new ReturnStatement(ParseExpression());
     }
 
     /* Expressions */
@@ -242,7 +262,7 @@ public class Parser {
     }
 
     private IExpression ParseIdentifierPrecededExpression() {
-        if (PeekMatch(TokenType.LeftParenthesis)) {
+        if (Match(Peek(2), TokenType.LeftParenthesis)) {
             return ParseFunctionCall();
         }
         return ParseVariableIdentifier();

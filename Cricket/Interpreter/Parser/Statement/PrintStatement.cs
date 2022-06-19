@@ -16,7 +16,6 @@ public class PrintStatement : IStatement {
     }
 
     public object Resolve(Resolver.ResolverEnvironment environment) {
-        _expression.Returns(environment);
         return _expression.Resolve(environment);
     }
 }

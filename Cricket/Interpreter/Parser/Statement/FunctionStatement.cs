@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using Cricket.Interpreter.Error;
+using Cricket.Interpreter.Parser.Statement.Expression;
 
 namespace Cricket.Interpreter.Parser.Statement;
 
@@ -23,11 +26,21 @@ public class FunctionStatement : IStatement {
         return null;
     }
 
-    //TODO: Implement resolver for function statement.
+    //TODO: Add local environment.
     public object Resolve(Resolver.ResolverEnvironment environment) {
         var argumentsType = new List<DataType>();
-        Arguments.ForEach(argument => argumentsType.Add(argument.Type));
-        environment.AddFunction(Name, argumentsType, _returns);
+        var argumentsTypeName = new List<string>();
+        var localEnvironment = new Resolver.ResolverEnvironment(environment.GetGlobal());
+        Arguments.ForEach(argument => {
+            argumentsType.Add(argument.Type);
+            localEnvironment.AddVariable(argument.Name, argument.Type);
+            argumentsTypeName.Add(Enum.GetName(argument.Type));
+        });
+        if (Program.Debug) Console.Out.WriteLine($"Resolver: Defining {Name}({string.Join(", ", argumentsTypeName)}).");
+        environment.GetGlobal().AddFunction(Name, argumentsType, _returns);
+        foreach (var statement in _statements) {
+            statement.Resolve(localEnvironment);
+        }
         return null;
     }
 
@@ -37,7 +50,31 @@ public class FunctionStatement : IStatement {
             var argumentExpression = environment.PopFromStack();
             localEnvironment.CreateVariable(Arguments[i].Name, Arguments[i].Type, argumentExpression);
         }
-        foreach (var statement in _statements) statement.Interpret(localEnvironment);
+        try {
+            foreach (var statement in _statements) {
+                statement.Interpret(localEnvironment);
+            }
+        }
+        catch (ReturnStatement.HackyReturnException returned) {
+            OnCallPutOnStack(environment, returned);
+            return;
+        }
+        if (_returns != DataType.Null) {
+            var argumentsTypeName = new List<string>();
+            Arguments.ForEach(argument => argumentsTypeName.Add(Enum.GetName(argument.Type)));
+            throw new MissingReturnStatementError(
+                $"Called function {Name}({string.Join(", ", argumentsTypeName)}) does not return any value. Required: {_returns}.");
+        }
+    }
+
+    private void OnCallPutOnStack(Environment.Environment environment, ReturnStatement.HackyReturnException returned) {
+        if (returned.Type != _returns) {
+            var argumentsTypeName = new List<string>();
+            Arguments.ForEach(argument => argumentsTypeName.Add(Enum.GetName(argument.Type)));
+            throw new InvalidReturnStatementError(
+                $"Called function {Name}({string.Join(", ", argumentsTypeName)}) returns invalid value type. Required: {_returns}, Present: {returned.Type}");
+        }
+        environment.PutOnStack(new ValueExpression(returned.Value, returned.Type));
     }
 
     public class FunctionArgument {

@@ -42,7 +42,7 @@ public class Resolver {
         private readonly ResolverEnvironment _parent;
         private readonly Dictionary<string, DataType> _variables;
         private readonly List<ResolverFunction> _functions;
-        
+
         public ResolverEnvironment(ResolverEnvironment parent) {
             _variables = new Dictionary<string, DataType>();
             _functions = parent == null ? new List<ResolverFunction>() : parent._functions;
@@ -73,33 +73,32 @@ public class Resolver {
 
         public bool FunctionExists(string name, List<DataType> arguments) {
             foreach (var function in _functions) {
-                if (function.Name != name ||  function.Arguments.Count != arguments.Count) {
+                if (function.Name != name || function.Arguments.Count != arguments.Count) {
                     continue;
                 }
-                for (var i = 0; i < arguments.Count; i++) {
-                    if (function.Arguments[i] != arguments[i]) {
-                        break;
-                    }
+                if (function.CompareArguments(arguments)) {
+                    return true;
                 }
-                return true;
             }
             return false;
         }
 
         public DataType FunctionReturns(string name, List<DataType> arguments) {
             foreach (var function in _functions) {
-                if (function.Name != name ||  function.Arguments.Count != arguments.Count) {
+                if (function.Name != name || function.Arguments.Count != arguments.Count) {
                     continue;
                 }
-                for (var i = 0; i < arguments.Count; i++) {
-                    if (function.Arguments[i] != arguments[i]) {
-                        break;
-                    }
+                if (function.CompareArguments(arguments)) {
+                    return function.Returns;
                 }
-                return function.Returns;
             }
             return DataType.Null;
         }
+
+        public ResolverEnvironment GetGlobal() {
+            return _parent == null ? this : _parent.GetGlobal();
+        }
+        
     }
 
     private class ResolverFunction {
@@ -111,6 +110,15 @@ public class Resolver {
             Name = name;
             Arguments = arguments;
             Returns = returns;
+        }
+
+        public bool CompareArguments(List<DataType> arguments) {
+            for (var i = 0; i < arguments.Count; i++) {
+                if (Arguments[i] != arguments[i]) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }
