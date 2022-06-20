@@ -1,20 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading;
 using Cricket.Interpreter.Error;
 using Cricket.Interpreter.Parser;
+using Cricket.Interpreter.Parser.Statement;
 
 namespace Cricket.Interpreter;
 
 public class Interpreter {
     public static bool Debug = false;
-    private readonly Environment.Environment _environment;
+    public readonly Environment.Environment Environment;
     private readonly string _path;
+    private readonly List<IStatement> _externalFunctions;
 
     public Interpreter(string path) {
         _path = path;
-        _environment = new Environment.Environment();
+        _externalFunctions = new List<IStatement>();
+        Environment = new Environment.Environment();
     }
 
     public void StartInterpreter() {
@@ -25,13 +29,25 @@ public class Interpreter {
             var tokens = scanner.Tokenize();
             var parser = new Parser.Parser(tokens);
             var statements = parser.ParseStatements();
+            _externalFunctions.AddRange(statements);
+            statements = _externalFunctions;
             var resolver = new Resolver(statements);
             resolver.Resolve();
-            foreach (var statement in statements) statement.Interpret(_environment);
+            foreach (var statement in statements) statement.Interpret(Environment);
         }
         catch (Exception e) {
             HandleException(e);
         }
+    }
+
+    public void AddExternalFunction(FunctionStatement statement) {
+        _externalFunctions.Add(statement);
+    }
+
+    public object CallFunction(string name) {
+        Environment.CallFunction(name, new List<DataType>());
+        var expression = Environment.PopFromStack();
+        return expression.Interpret(Environment);
     }
 
     public static void HandleException(Exception exception) {

@@ -24,31 +24,31 @@ public class Scanner {
             }
 
             if (char.IsLetter(current)) {
-                var consumedString = ConsumeString(current);
-                switch (consumedString) {
+                var consumeIdentifier = ConsumeIdentifier(current);
+                switch (consumeIdentifier) {
                     case "var":
-                        NewToken(TokenType.Var, consumedString);
+                        NewToken(TokenType.Var, consumeIdentifier);
                         break;
                     case "if":
-                        NewToken(TokenType.If, consumedString);
+                        NewToken(TokenType.If, consumeIdentifier);
                         break;
                     case "print":
-                        NewToken(TokenType.Print, consumedString);
+                        NewToken(TokenType.Print, consumeIdentifier);
                         break;
                     case "true":
-                        NewToken(TokenType.True, consumedString);
+                        NewToken(TokenType.True, consumeIdentifier);
                         break;
                     case "false":
-                        NewToken(TokenType.False, consumedString);
+                        NewToken(TokenType.False, consumeIdentifier);
                         break;
                     case "func":
-                        NewToken(TokenType.Func, consumedString);
+                        NewToken(TokenType.Func, consumeIdentifier);
                         break;
                     case "return":
-                        NewToken(TokenType.Return, consumedString);
+                        NewToken(TokenType.Return, consumeIdentifier);
                         break;
                     default:
-                        NewToken(TokenType.Identifier, consumedString);
+                        NewToken(TokenType.Identifier, consumeIdentifier);
                         break;
                 }
                 continue;
@@ -102,6 +102,9 @@ public class Scanner {
                 case '}':
                     NewToken(TokenType.RightBrace, current.ToString());
                     break;
+                case '"':
+                    ConsumeString();
+                    break;
                 default:
                     throw _index != 0
                         ? new UnrecognizedSyntaxError(_source[_line], _line, _index)
@@ -137,7 +140,19 @@ public class Scanner {
         NewToken(tokenType, numeric);
     }
 
-    private string ConsumeString(char current) {
+    private void ConsumeString() {
+        var stringBuilder = new StringBuilder();
+        while (!EndOfFile()) {
+            if (Peek() == '"') {
+                Consume();
+                break;
+            }
+            stringBuilder.Append(Consume());
+        }
+        NewToken(TokenType.String, stringBuilder.ToString());
+    }
+    
+    private string ConsumeIdentifier(char current) {
         var stringBuilder = new StringBuilder();
         stringBuilder.Append(current);
         while (!EndOfFile()) {

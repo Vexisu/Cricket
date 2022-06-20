@@ -66,6 +66,9 @@ public class BinaryExpression : IExpression {
         if (_left.Returns(environment) == DataType.Integer && _right.Returns(environment) == DataType.Integer) {
             return DataType.Integer;
         }
+        if (_left.Returns(environment) == DataType.String || _right.Returns(environment) == DataType.String) {
+            return DataType.String;
+        }
         throw new ResolverError("Unresolvable data types in expression.");
     }
 }

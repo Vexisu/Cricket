@@ -23,6 +23,9 @@ public class FunctionStatement : IStatement {
     //TODO: Implement interpreting phase for function statement.
     public object Interpret(Environment.Environment environment) {
         environment.CreateFunction(this);
+        if (Interpreter.Debug) {
+            Console.Out.WriteLine($"Interpreter: {Name}() has been registered.");
+        }
         return null;
     }
 

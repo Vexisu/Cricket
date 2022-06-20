@@ -154,7 +154,7 @@ public class Parser {
     private IExpression ParseExpression() {
         Log("Expression");
         return Match(Peek(), TokenType.Integer, TokenType.Float, TokenType.True, TokenType.False, TokenType.Identifier,
-            TokenType.LeftParenthesis, TokenType.Minus)
+            TokenType.LeftParenthesis, TokenType.Minus, TokenType.String)
             ? ParseComparison()
             : null;
     }
