@@ -20,7 +20,7 @@ public class VariableStatement : IStatement {
     }
 
     public object Resolve(Resolver.ResolverEnvironment environment) {
-        if (Program.Debug) Console.Out.WriteLine($"Resolver: Defining {_name} ({_type}).");
+        if (Interpreter.Debug) Console.Out.WriteLine($"Resolver: Defining {_name} ({_type}).");
         _expression.Resolve(environment);
         Resolver.CheckTypeIntegrity(_name, _expression.Returns(environment), _type);
         environment.AddVariable(_name, _type);

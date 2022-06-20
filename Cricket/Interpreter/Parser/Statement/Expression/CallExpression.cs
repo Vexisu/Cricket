@@ -31,7 +31,7 @@ public class CallExpression : IExpression {
         }
         var argumentsTypeName = new List<string>();
         _argumentsType.ForEach(type => argumentsTypeName.Add(Enum.GetName(type)));
-        if (Program.Debug) Console.Out.WriteLine($"Resolver: Resolving for function {_calledFunction}({string.Join(", ", argumentsTypeName)}).");
+        if (Interpreter.Debug) Console.Out.WriteLine($"Resolver: Resolving for function {_calledFunction}({string.Join(", ", argumentsTypeName)}).");
         if (!environment.FunctionExists(_calledFunction, _argumentsType)) {
             throw new ResolverError(
                 $"Called function {_calledFunction}({string.Join(", ", argumentsTypeName)}) does not exists.");

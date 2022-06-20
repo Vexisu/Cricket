@@ -36,7 +36,7 @@ public class FunctionStatement : IStatement {
             localEnvironment.AddVariable(argument.Name, argument.Type);
             argumentsTypeName.Add(Enum.GetName(argument.Type));
         });
-        if (Program.Debug) Console.Out.WriteLine($"Resolver: Defining {Name}({string.Join(", ", argumentsTypeName)}).");
+        if (Interpreter.Debug) Console.Out.WriteLine($"Resolver: Defining {Name}({string.Join(", ", argumentsTypeName)}).");
         environment.GetGlobal().AddFunction(Name, argumentsType, _returns);
         foreach (var statement in _statements) {
             statement.Resolve(localEnvironment);

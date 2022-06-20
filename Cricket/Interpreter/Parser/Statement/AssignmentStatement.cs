@@ -20,7 +20,7 @@ public class AssignmentStatement : IStatement {
     }
 
     public object Resolve(Resolver.ResolverEnvironment environment) {
-        if (Program.Debug) Console.Out.WriteLine($"Resolver: Assigning {_name}.");
+        if (Interpreter.Debug) Console.Out.WriteLine($"Resolver: Assigning {_name}.");
         if (!environment.VariableExists(_name)) {
             throw new ResolverError($"Variable {_name} does not exists.");
         }

@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
+using System.Threading;
 using Cricket.Interpreter.Error;
 using Cricket.Interpreter.Parser;
 
 namespace Cricket.Interpreter;
 
 public class Interpreter {
+    public static bool Debug = false;
     private readonly Environment.Environment _environment;
     private readonly string _path;
 
@@ -15,6 +18,7 @@ public class Interpreter {
     }
 
     public void StartInterpreter() {
+        HackDecimals();
         try {
             var source = File.ReadAllLines(_path);
             var scanner = new Scanner.Scanner(source);
@@ -68,5 +72,12 @@ public class Interpreter {
         Console.Out.WriteLine(error.Message);
         Console.Out.WriteLine($@"{error.Line + 1}:{error.Index}: {error.SourceCode}");
         Console.Out.WriteLine($@"{new string(' ', error.Line / 10 + error.Index / 10 + error.Index + 4)}^");
+    }
+    
+    // This dirty hack fixes decimal separator in CSharp
+    private static void HackDecimals() {
+        var cultureInfo = new CultureInfo("en-US");
+        cultureInfo.NumberFormat = NumberFormatInfo.InvariantInfo;
+        Thread.CurrentThread.CurrentCulture = cultureInfo;
     }
 }

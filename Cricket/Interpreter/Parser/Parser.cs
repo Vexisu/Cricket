@@ -359,7 +359,7 @@ public class Parser {
     }
 
     private void Log(string logType) {
-        if (!Program.Debug) return;
+        if (!Interpreter.Debug) return;
         var current = _tokens[_index];
         Console.Out.WriteLine($"Parser: {current.Line + 1}:{logType} around {current.Lexeme} ");
     }
