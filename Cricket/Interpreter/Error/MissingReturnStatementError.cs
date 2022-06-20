@@ -1,7 +1,7 @@
 ﻿using System;
 
-namespace Cricket.Interpreter.Error; 
+namespace Cricket.Interpreter.Error;
 
-public class MissingReturnStatementError : Exception{
+public class MissingReturnStatementError : Exception {
     public MissingReturnStatementError(string message) : base(message) { }
 }

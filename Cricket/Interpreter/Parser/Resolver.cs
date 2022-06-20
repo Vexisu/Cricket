@@ -39,9 +39,9 @@ public class Resolver {
     }
 
     public class ResolverEnvironment {
+        private readonly List<ResolverFunction> _functions;
         private readonly ResolverEnvironment _parent;
         private readonly Dictionary<string, DataType> _variables;
-        private readonly List<ResolverFunction> _functions;
 
         public ResolverEnvironment(ResolverEnvironment parent) {
             _variables = new Dictionary<string, DataType>();
@@ -98,26 +98,24 @@ public class Resolver {
         public ResolverEnvironment GetGlobal() {
             return _parent == null ? this : _parent.GetGlobal();
         }
-        
     }
 
     private class ResolverFunction {
-        public string Name { get; }
-        public List<DataType> Arguments { get; }
-        public DataType Returns { get; }
-
         public ResolverFunction(string name, List<DataType> arguments, DataType returns) {
             Name = name;
             Arguments = arguments;
             Returns = returns;
         }
 
+        public string Name { get; }
+        public List<DataType> Arguments { get; }
+        public DataType Returns { get; }
+
         public bool CompareArguments(List<DataType> arguments) {
-            for (var i = 0; i < arguments.Count; i++) {
+            for (var i = 0; i < arguments.Count; i++)
                 if (Arguments[i] != arguments[i]) {
                     return false;
                 }
-            }
             return true;
         }
     }

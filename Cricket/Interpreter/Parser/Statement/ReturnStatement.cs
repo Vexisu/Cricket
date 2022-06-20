@@ -22,12 +22,12 @@ public class ReturnStatement : IStatement {
     }
 
     public class HackyReturnException : Exception {
-        public object Value { get; }
-        public DataType Type { get; }
-
         public HackyReturnException(object value, DataType type) {
             Value = value;
             Type = type;
         }
+
+        public object Value { get; }
+        public DataType Type { get; }
     }
 }

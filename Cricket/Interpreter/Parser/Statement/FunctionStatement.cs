@@ -36,11 +36,10 @@ public class FunctionStatement : IStatement {
             localEnvironment.AddVariable(argument.Name, argument.Type);
             argumentsTypeName.Add(Enum.GetName(argument.Type));
         });
-        if (Interpreter.Debug) Console.Out.WriteLine($"Resolver: Defining {Name}({string.Join(", ", argumentsTypeName)}).");
+        if (Interpreter.Debug)
+            Console.Out.WriteLine($"Resolver: Defining {Name}({string.Join(", ", argumentsTypeName)}).");
         environment.GetGlobal().AddFunction(Name, argumentsType, _returns);
-        foreach (var statement in _statements) {
-            statement.Resolve(localEnvironment);
-        }
+        foreach (var statement in _statements) statement.Resolve(localEnvironment);
         return null;
     }
 
@@ -51,9 +50,7 @@ public class FunctionStatement : IStatement {
             localEnvironment.CreateVariable(Arguments[i].Name, Arguments[i].Type, argumentExpression);
         }
         try {
-            foreach (var statement in _statements) {
-                statement.Interpret(localEnvironment);
-            }
+            foreach (var statement in _statements) statement.Interpret(localEnvironment);
         }
         catch (ReturnStatement.HackyReturnException returned) {
             OnCallPutOnStack(environment, returned);

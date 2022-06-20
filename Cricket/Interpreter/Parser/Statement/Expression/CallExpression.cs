@@ -5,9 +5,9 @@ using Cricket.Interpreter.Error;
 namespace Cricket.Interpreter.Parser.Statement.Expression;
 
 public class CallExpression : IExpression {
-    private readonly string _calledFunction;
     private readonly List<IExpression> _arguments;
     private readonly List<DataType> _argumentsType;
+    private readonly string _calledFunction;
     private DataType _functionReturns;
 
     public CallExpression(string calledFunction, List<IExpression> arguments) {
@@ -17,9 +17,8 @@ public class CallExpression : IExpression {
     }
 
     public object Interpret(Environment.Environment environment) {
-        for (var i = 0; i < _arguments.Count; i++) {
+        for (var i = 0; i < _arguments.Count; i++)
             environment.PutOnStack(new ValueExpression(_arguments[i].Interpret(environment), _argumentsType[i]));
-        }
         environment.CallFunction(_calledFunction, _argumentsType);
         return _functionReturns != DataType.Null ? environment.PopFromStack().Interpret(environment) : null;
     }
@@ -31,7 +30,9 @@ public class CallExpression : IExpression {
         }
         var argumentsTypeName = new List<string>();
         _argumentsType.ForEach(type => argumentsTypeName.Add(Enum.GetName(type)));
-        if (Interpreter.Debug) Console.Out.WriteLine($"Resolver: Resolving for function {_calledFunction}({string.Join(", ", argumentsTypeName)}).");
+        if (Interpreter.Debug)
+            Console.Out.WriteLine(
+                $"Resolver: Resolving for function {_calledFunction}({string.Join(", ", argumentsTypeName)}).");
         if (!environment.FunctionExists(_calledFunction, _argumentsType)) {
             throw new ResolverError(
                 $"Called function {_calledFunction}({string.Join(", ", argumentsTypeName)}) does not exists.");

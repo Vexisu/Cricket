@@ -73,7 +73,7 @@ public class Interpreter {
         Console.Out.WriteLine($@"{error.Line + 1}:{error.Index}: {error.SourceCode}");
         Console.Out.WriteLine($@"{new string(' ', error.Line / 10 + error.Index / 10 + error.Index + 4)}^");
     }
-    
+
     // This dirty hack fixes decimal separator in CSharp
     private static void HackDecimals() {
         var cultureInfo = new CultureInfo("en-US");
