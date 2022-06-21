@@ -60,14 +60,14 @@ public class BinaryExpression : IExpression {
         if (_left.Returns(environment) == DataType.Boolean || _right.Returns(environment) == DataType.Boolean) {
             throw new ResolverError("Arithmetical operations are not allowed on Boolean.");
         }
+        if (_left.Returns(environment) == DataType.String || _right.Returns(environment) == DataType.String) {
+            return DataType.String;
+        }
         if (_left.Returns(environment) == DataType.Float || _right.Returns(environment) == DataType.Float) {
             return DataType.Float;
         }
         if (_left.Returns(environment) == DataType.Integer && _right.Returns(environment) == DataType.Integer) {
             return DataType.Integer;
-        }
-        if (_left.Returns(environment) == DataType.String || _right.Returns(environment) == DataType.String) {
-            return DataType.String;
         }
         throw new ResolverError("Unresolvable data types in expression.");
     }

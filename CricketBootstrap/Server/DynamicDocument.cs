@@ -25,6 +25,7 @@ public class DynamicDocument {
         for (int i = 0; i < _searchMatches.Count; i++) {
             dynamicDocument = dynamicDocument.Replace(_replacementMatches[i].Value, Execute(_searchMatches[i].Value));
         }
+        _environmentManager.RemoveGetRequestValues(nameValueCollection);
         return dynamicDocument;
     }
 

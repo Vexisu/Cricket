@@ -25,4 +25,14 @@ public class EnvironmentManager {
             }
         }
     }
+    public void RemoveGetRequestValues(NameValueCollection nameValueCollection) {
+        foreach (var key in nameValueCollection.AllKeys) {
+            foreach (var interpreter in EnvironmentsInterpreter.Values) {
+                if (interpreter.Environment.VariableExists("GET." + key)) {
+                    interpreter.Environment.UpdateVariable("GET." + key,
+                        new ValueExpression(string.Empty, DataType.String));
+                }
+            }
+        }
+    }
 }
