@@ -77,6 +77,7 @@ public class Interpreter {
                 Console.Out.WriteLine(exception.ToString());
                 break;
         }
+        System.Environment.Exit(102);
     }
 
     private static void HandleUnexpectedSyntaxError(UnexpectedSyntaxError error) {

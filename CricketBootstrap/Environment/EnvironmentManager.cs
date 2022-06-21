@@ -1,12 +1,28 @@
+using System.Collections.Specialized;
 using Cricket.Interpreter;
+using Cricket.Interpreter.Parser.Statement.Expression;
 
-namespace CricketBootstrap.Environment; 
+namespace CricketBootstrap.Environment;
 
 public class EnvironmentManager {
-    public Dictionary<string, Interpreter> EnvironmentInterpreter { get; }
+    public Dictionary<string, Interpreter> EnvironmentsInterpreter { get; }
 
     public EnvironmentManager() {
-        EnvironmentInterpreter = new Dictionary<string, Interpreter>();
+        EnvironmentsInterpreter = new Dictionary<string, Interpreter>();
     }
-    
+
+    public void AddGetRequestValues(NameValueCollection nameValueCollection) {
+        foreach (var key in nameValueCollection.AllKeys) {
+            foreach (var interpreter in EnvironmentsInterpreter.Values) {
+                if (!interpreter.Environment.VariableExists("GET." + key)) {
+                    interpreter.Environment.CreateVariable("GET." + key, DataType.String,
+                        new ValueExpression(nameValueCollection.Get(key), DataType.String));
+                }
+                else {
+                    interpreter.Environment.UpdateVariable("GET." + key,
+                        new ValueExpression(nameValueCollection.Get(key), DataType.String));
+                }
+            }
+        }
+    }
 }

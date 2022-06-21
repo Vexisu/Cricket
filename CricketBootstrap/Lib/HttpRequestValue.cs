@@ -4,7 +4,7 @@ using Cricket.Interpreter.Parser.Statement;
 
 namespace CricketBootstrap.Lib;
 
-public class HttpRequestValue {
+public static class HttpRequestValue {
     public static void Link(Interpreter interpreter) {
         var statement = new FunctionStatement("HttpRequestValue",
             new List<FunctionStatement.FunctionArgument>()
@@ -22,7 +22,7 @@ public class HttpRequestValue {
                 throw new ReturnStatement.HackyReturnException(environment.GetVariable(valueName).Interpret(environment),
                     DataType.String);
             }
-            throw new ReturnStatement.HackyReturnException("",
+            throw new ReturnStatement.HackyReturnException(string.Empty,
                 DataType.String);
         }
 
