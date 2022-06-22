@@ -53,6 +53,9 @@ public class Parser {
                     statements.Add(ParsePrintStatement());
                     ExpectSemicolon();
                     break;
+                case TokenType.While:
+                    statements.Add(ParseWhileStatement());
+                    break;
                 default:
                     throw new UnexpectedSyntaxError(Peek().Line, Peek().Lexeme, "statement");
             }
@@ -141,6 +144,17 @@ public class Parser {
         var statements = ParseStatements(true);
         ExpectAndConsume(TokenType.RightBrace, "}");
         return new FunctionStatement(functionName, arguments, statements, returnedType);
+    }
+
+    private IStatement ParseWhileStatement() {
+        Consume();
+        ExpectAndConsume(TokenType.LeftParenthesis, ("("));
+        var condition = ParseExpression();
+        ExpectAndConsume(TokenType.RightParenthesis, ")");
+        ExpectAndConsume(TokenType.LeftBrace, "{");
+        var statements = ParseStatements(true);
+        ExpectAndConsume(TokenType.RightBrace, "}");
+        return new WhileStatement(condition, statements);
     }
 
     private IStatement ParseReturnStatement() {

@@ -47,6 +47,9 @@ public class Scanner {
                     case "return":
                         NewToken(TokenType.Return, consumeIdentifier);
                         break;
+                    case "while":
+                        NewToken(TokenType.While, consumeIdentifier);
+                        break;
                     default:
                         NewToken(TokenType.Identifier, consumeIdentifier);
                         break;

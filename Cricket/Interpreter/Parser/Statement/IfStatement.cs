@@ -36,7 +36,7 @@ public class IfStatement : IStatement {
         }
         else {
             throw new ResolverError(
-                $"The expression of if's condition does not return Boolean. Present: {returnedType}");
+                $"The expression of if's condition does not return Boolean. Present: {returnedType}.");
         }
         return null;
     }
