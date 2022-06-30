@@ -11,6 +11,10 @@ namespace Cricket.Interpreter.Parser;
 public class Resolver {
     private readonly List<IStatement> _statements;
 
+    /**
+     * Konstruktor klasy Resolver.
+     * <param name="statements">Lista deklaracji</param>
+     */
     public Resolver(List<IStatement> statements) {
         _statements = statements;
     }
@@ -31,6 +35,10 @@ public class Resolver {
         private readonly ResolverEnvironment _parent;
         private readonly Dictionary<string, DataType> _variables;
 
+        /**
+         * Konstruktor klasy ResolverEnvironment.
+         * <param name="parent">Rodzic środowiska</param>
+         */
         public ResolverEnvironment(ResolverEnvironment parent) {
             _variables = new Dictionary<string, DataType>();
             _functions = parent == null ? new List<ResolverFunction>() : parent._functions;

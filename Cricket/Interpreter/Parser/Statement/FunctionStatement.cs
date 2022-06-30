@@ -5,10 +5,20 @@ using Cricket.Interpreter.Parser.Statement.Expression;
 
 namespace Cricket.Interpreter.Parser.Statement;
 
+/**
+ * Klasa deklaracji funkcji.
+ */
 public class FunctionStatement : IStatement {
     private readonly DataType _returns;
     private readonly List<IStatement> _statements;
 
+    /**
+     * Konstruktor klasy FunctionStatement.
+     * <param name="name">Nazwa funkcji</param>
+     * <param name="arguments">Lista argumentów</param>
+     * <param name="statements">Lista deklaracji</param>
+     * <param name="returns">Typ zwracany</param>
+     */
     public FunctionStatement(string name, List<FunctionArgument> arguments, List<IStatement> statements,
         DataType returns) {
         Name = name;
@@ -20,7 +30,11 @@ public class FunctionStatement : IStatement {
     public string Name { get; }
     public List<FunctionArgument> Arguments { get; }
 
-    //TODO: Implement interpreting phase for function statement.
+    /**
+     * Metoda interpretacji deklaracji funkcji.
+     * <param name="environment">Środowisko pracy</param>
+     * <returns>Wartość operacji</returns>
+     */
     public object Interpret(Environment.Environment environment) {
         environment.CreateFunction(this);
         if (Interpreter.Debug) {
@@ -29,7 +43,11 @@ public class FunctionStatement : IStatement {
         return null;
     }
 
-    //TODO: Add local environment.
+    /**
+     * Metoda rozwiązania deklaracji funkcji.
+     * <param name="environment">Środowisko rozwiązania</param>
+     * <returns>Wartość rozwiązania</returns>
+     */
     public object Resolve(Resolver.ResolverEnvironment environment) {
         var argumentsType = new List<DataType>();
         var argumentsTypeName = new List<string>();
@@ -46,6 +64,10 @@ public class FunctionStatement : IStatement {
         return null;
     }
 
+    /**
+     * Metoda wywołania funkcji.
+     * <param name="environment">Środowisko pracy</param>
+     */
     public void Call(Environment.Environment environment) {
         var localEnvironment = new Environment.Environment(environment.GetGlobal());
         for (var i = Arguments.Count - 1; i >= 0; i--) {
@@ -67,6 +89,11 @@ public class FunctionStatement : IStatement {
         }
     }
 
+    /**
+     * Metoda odkładająca na stos.
+     * <param name="environment">Środowisko pracy</param>
+     * <param name="returned">Wartość zwracana</param>
+     */
     private void OnCallPutOnStack(Environment.Environment environment, ReturnStatement.HackyReturnException returned) {
         if (returned.Type != _returns) {
             var argumentsTypeName = new List<string>();
@@ -77,6 +104,9 @@ public class FunctionStatement : IStatement {
         environment.PutOnStack(new ValueExpression(returned.Value, returned.Type));
     }
 
+    /**
+     * Klasa argumentów funkcji.
+     */
     public class FunctionArgument {
         public FunctionArgument(string name, DataType type) {
             Name = name;
