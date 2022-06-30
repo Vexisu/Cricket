@@ -6,6 +6,11 @@ namespace Cricket;
 internal static class Program {
     private static bool _debug;
 
+/**
+ * Funkcja main interpretera
+ * <param name="args">Argumenty przyjmowane przy uruchomieniuW</param>
+ */
+
     private static void Main(string[] args) {
         if (args.Length > 0) {
             if (args[0] == "--debug") {
@@ -26,6 +31,9 @@ internal static class Program {
         }
     }
 
+/**
+ * Funkcja zwracająca informację w przypadku braku podania pliku źródłowego.
+ */
     private static void NoPathPresent() {
         Console.Out.WriteLine("No path to source file.");
         Environment.Exit(101);

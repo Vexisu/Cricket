@@ -15,12 +15,19 @@ public class Interpreter {
     private readonly string _path;
     private readonly List<IStatement> _externalFunctions;
 
+    /**
+     * Konstruktor klasy Interpreter.
+     * <param name="path">Ścieżka pliku źródłowego</param>
+     */
     public Interpreter(string path) {
         _path = path;
         _externalFunctions = new List<IStatement>();
         Environment = new Environment.Environment();
     }
 
+    /**
+     * Metoda uruchamiająca interpreter.
+     */
     public void StartInterpreter() {
         HackDecimals();
         try {
@@ -40,16 +47,29 @@ public class Interpreter {
         }
     }
 
+    /**
+     * Metoda API dodająca zewnętrzne funkcje do środowika interpretera.
+     * <param name="statement">Obiekt funkcji</param>
+     */
     public void AddExternalFunction(FunctionStatement statement) {
         _externalFunctions.Add(statement);
     }
 
+    /**
+     * Metoda API wywołująca funkcje ze środowiska intepretera.
+     * <param name="name">Nazwa wywoływanej funkcji</param>
+     * <returns>Wartość zwórcona przez wywołaną funkcję</returns>
+     */
     public object CallFunction(string name) {
         Environment.CallFunction(name, new List<DataType>());
         var expression = Environment.PopFromStack();
         return expression.Interpret(Environment);
     }
 
+    /**
+     * Funkcja przechwytująca wyjątki.
+     * <param name="exception">Przechwytywany wyjątek</param>
+     */
     public static void HandleException(Exception exception) {
         switch (exception) {
             case UnrecognizedSyntaxError error:
@@ -80,11 +100,19 @@ public class Interpreter {
         System.Environment.Exit(102);
     }
 
+    /**
+     * Funkcja formatująca wyjście dla wyjątku syntaktycznego.
+     * <param name="error">Wyjątek wyntaktyczny</param>
+     */
     private static void HandleUnexpectedSyntaxError(UnexpectedSyntaxError error) {
         Console.Out.WriteLine(error.Message);
         Console.Out.WriteLine($@"{error.Line + 1}: present: {error.Present}, expected: {error.Expected}.");
     }
-
+    
+    /**
+     * Funkcja formatująca wyjście dla wyjątku nierozpoznanej syntaktyki.
+     * <param name="error">Wyjątek nierozpoznanej syntaktyki</param>
+     */
     private static void HandleUnrecognizedSyntaxError(UnrecognizedSyntaxError error) {
         Console.Out.WriteLine(error.Message);
         Console.Out.WriteLine($@"{error.Line + 1}:{error.Index}: {error.SourceCode}");
@@ -92,6 +120,9 @@ public class Interpreter {
     }
 
     // This dirty hack fixes decimal separator in CSharp
+    /**
+     * Funkcja naprawiająca błąd związany z wykorzystaniem przecinków w typie float w niektórych regionach świata.
+     */
     private static void HackDecimals() {
         var cultureInfo = new CultureInfo("en-US");
         cultureInfo.NumberFormat = NumberFormatInfo.InvariantInfo;

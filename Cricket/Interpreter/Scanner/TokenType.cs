@@ -1,5 +1,8 @@
 ﻿namespace Cricket.Interpreter.Scanner;
 
+/**
+ * Typ enumeracyjny elementów syntaktycznych języka.
+ */
 public enum TokenType {
     // One character tokens
     Plus,

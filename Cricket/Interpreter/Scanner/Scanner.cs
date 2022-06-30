@@ -9,12 +9,18 @@ public class Scanner {
     private readonly List<Token> _tokens;
     private int _index, _line;
 
+    /**
+     * Konstruktor klasy Scanner.
+     * <param name="source">Kod źródłowy</param>
+     */
     public Scanner(string[] source) {
         _source = source;
         _tokens = new List<Token>();
     }
 
-    // TODO: Add support for multi-character syntax
+    /**
+     * Metoda rozpoczynający proces tokenizacji.
+     */
     public List<Token> Tokenize() {
         while (!EndOfFile()) {
             var current = Consume();
@@ -117,6 +123,10 @@ public class Scanner {
         return _tokens;
     }
 
+    /**
+     * Metoda konsumująca znaki kodu źródłowego.
+     * <returns>Skonsumowany znak</returns>
+     */
     private char Consume() {
         if (_index >= _source[_line].Length) {
             _index = 0;
@@ -127,6 +137,10 @@ public class Scanner {
         return character;
     }
 
+    /**
+     * Metoda konsumująca ciąg numeryczny.
+     * <param name="current">Skonsumowany poprzednio znak</param> 
+     */
     private void ConsumeNumeric(char current) {
         var tokenType = TokenType.Integer;
         var numeric = current.ToString();
@@ -143,6 +157,9 @@ public class Scanner {
         NewToken(tokenType, numeric);
     }
 
+    /**
+     * Metoda konsumująca ciąg znaków rozpoznany jako typ String.
+     */
     private void ConsumeString() {
         var stringBuilder = new StringBuilder();
         while (!EndOfFile()) {
@@ -155,6 +172,10 @@ public class Scanner {
         NewToken(TokenType.String, stringBuilder.ToString());
     }
     
+    /**
+     * Metoda konsumująca ciąg znaków rozpoznany jako identyfikator.
+     * <param name="current">Skonsumowany poprzednio znak</param>
+     */
     private string ConsumeIdentifier(char current) {
         var stringBuilder = new StringBuilder();
         stringBuilder.Append(current);
@@ -165,15 +186,28 @@ public class Scanner {
         return stringBuilder.ToString();
     }
 
+    /**
+     * Metoda tworząca nowy token.
+     * <param name="tokenType">Typ tokenu</param>
+     * <param name="lexeme">Skonsumowany ciąg identyfikujący</param>
+     */
     private void NewToken(TokenType tokenType, string lexeme) {
         _tokens.Add(new Token(tokenType, lexeme, _line));
     }
 
+    /**
+     * Metoda zaglądająca w przód.
+     * <returns>Kolejny znak</returns>
+     */
     private char Peek() {
         return _index < _source[_line].Length ? _source[_line][_index] :
             _source[_line + 1].Length > 0 ? _source[_line + 1][0] : ' ';
     }
 
+    /**
+     * Metoda zwracająca stan końca pliku.
+     * <returns>Koniec pliku</returns>
+     */
     private bool EndOfFile() {
         return _line == _source.Length - 1 && _index >= _source[_line].Length;
     }
