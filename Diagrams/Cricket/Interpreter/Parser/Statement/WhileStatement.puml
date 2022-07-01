@@ -1,0 +1,10 @@
+@startuml
+class WhileStatement {
+    - _condition : IExpression
+    - _statements : List<IStatement>
+    + WhileStatement(condition:IExpression, statements:List<IStatement>)
+    + Interpret(environment:Environment.Environment) : object
+    + Resolve(environment:Resolver.ResolverEnvironment) : object
+}
+IStatement <|-- WhileStatement
+@enduml

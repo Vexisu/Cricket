@@ -1,0 +1,6 @@
+@startuml
+class InvalidReturnStatementError {
+    + InvalidReturnStatementError(message:string)
+}
+Exception <|-- InvalidReturnStatementError
+@enduml

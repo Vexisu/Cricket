@@ -1,0 +1,7 @@
+@startuml
+class VariableWrapper {
+    + VariableWrapper(expression:IExpression, dataType:DataType)
+    + Expression : IExpression <<get>> <<set>>
+    + DataType : DataType <<get>>
+}
+@enduml

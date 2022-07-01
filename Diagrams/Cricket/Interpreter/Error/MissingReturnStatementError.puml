@@ -1,0 +1,6 @@
+@startuml
+class MissingReturnStatementError {
+    + MissingReturnStatementError(message:string)
+}
+Exception <|-- MissingReturnStatementError
+@enduml

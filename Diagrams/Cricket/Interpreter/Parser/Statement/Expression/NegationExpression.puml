@@ -1,0 +1,10 @@
+@startuml
+class NegationExpression {
+    - <<readonly>> _expression : IExpression
+    + NegationExpression(expression:IExpression)
+    + Interpret(environment:Environment.Environment) : object
+    + Resolve(environment:Resolver.ResolverEnvironment) : object
+    + Returns(environment:Resolver.ResolverEnvironment) : DataType
+}
+IExpression <|-- NegationExpression
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+class VariableStatement {
+    - <<readonly>> _expression : IExpression
+    - <<readonly>> _name : string
+    - <<readonly>> _type : DataType
+    + VariableStatement(name:string, type:DataType, expression:IExpression)
+    + Interpret(environment:Environment.Environment) : object
+    + Resolve(environment:Resolver.ResolverEnvironment) : object
+}
+IStatement <|-- VariableStatement
+@enduml

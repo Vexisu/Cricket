@@ -1,0 +1,7 @@
+@startuml
+class CricketBootstrap <<static>> {
+    + {static} Main() : void
+    - {static} LoadEnvironments() : EnvironmentManager
+    - {static} LoadDocuments(environmentManager:EnvironmentManager) : Dictionary<string, DynamicDocument>
+}
+@enduml

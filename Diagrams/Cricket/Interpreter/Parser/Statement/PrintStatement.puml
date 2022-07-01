@@ -1,0 +1,9 @@
+@startuml
+class PrintStatement {
+    - <<readonly>> _expression : IExpression
+    + PrintStatement(expression:IExpression)
+    + Interpret(environment:Environment.Environment) : object
+    + Resolve(environment:Resolver.ResolverEnvironment) : object
+}
+IStatement <|-- PrintStatement
+@enduml

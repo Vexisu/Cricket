@@ -1,0 +1,21 @@
+@startuml
+class Environment {
+    - <<readonly>> _functions : List<FunctionStatement>
+    - <<readonly>> _parent : Environment
+    - <<readonly>> _stack : Stack<IExpression>
+    - <<readonly>> _variables : Dictionary<string, VariableWrapper>
+    + Environment(parent:Environment)
+    + Environment()
+    + CreateVariable(name:string, dataType:DataType, expression:IExpression) : bool
+    + UpdateVariable(name:string, expression:IExpression) : bool
+    + GetVariable(name:string) : IExpression
+    + GetVariableType(name:string) : DataType
+    + VariableExists(name:string) : bool
+    + CreateFunction(statement:FunctionStatement) : void
+    + CallFunction(name:string, argumentsType:List<DataType>) : void
+    - CompareFunctionVariables(function:FunctionStatement, argumentsType:List<DataType>) : bool
+    + PutOnStack(expression:IExpression) : void
+    + PopFromStack() : IExpression
+    + GetGlobal() : Environment
+}
+@enduml

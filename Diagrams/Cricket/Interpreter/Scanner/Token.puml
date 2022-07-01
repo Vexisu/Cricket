@@ -1,0 +1,10 @@
+@startuml
+class Token {
+    + Token(type:TokenType, lexeme:string, line:int)
+    + Type : TokenType <<get>>
+    + Lexeme : string <<get>>
+    + Line : int <<get>>
+    + <<override>> Equals(obj:object) : bool
+    + <<override>> GetHashCode() : int
+}
+@enduml

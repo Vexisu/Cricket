@@ -1,0 +1,20 @@
+@startuml
+class FunctionStatement {
+    - <<readonly>> _returns : DataType
+    - <<readonly>> _statements : List<IStatement>
+    + FunctionStatement(name:string, arguments:List<FunctionArgument>, statements:List<IStatement>, returns:DataType)
+    + Name : string <<get>>
+    + Arguments : List<FunctionArgument> <<get>>
+    + Interpret(environment:Environment.Environment) : object
+    + Resolve(environment:Resolver.ResolverEnvironment) : object
+    + Call(environment:Environment.Environment) : void
+    - OnCallPutOnStack(environment:Environment.Environment, returned:ReturnStatement.HackyReturnException) : void
+}
+class FunctionArgument {
+    + FunctionArgument(name:string, type:DataType)
+    + Name : string <<get>>
+    + Type : DataType <<get>>
+}
+IStatement <|-- FunctionStatement
+FunctionStatement +-- FunctionArgument
+@enduml

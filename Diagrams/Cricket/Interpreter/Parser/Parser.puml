@@ -1,0 +1,37 @@
+@startuml
+class Parser {
+    - <<readonly>> _tokens : List<Token>
+    - _index : int
+    + Parser(tokens:List<Token>)
+    + ParseStatements(inner:bool) : List<IStatement>
+    - ParseIdentifierPrecededStatement() : IStatement
+    - ParsePrintStatement() : IStatement
+    - ParseIfStatement() : IStatement
+    - ParseVariableStatement() : IStatement
+    - ParseAssignmentStatement(identifier:string) : IStatement
+    - ParseFunctionStatement() : IStatement
+    - ParseWhileStatement() : IStatement
+    - ParseReturnStatement() : IStatement
+    - ParseExpression() : IExpression
+    - ParseComparison() : IExpression
+    - ParseTerm() : IExpression
+    - ParseFactor() : IExpression
+    - ParseParenthesis() : IExpression
+    - ParseUnary() : IExpression
+    - ParseValue() : IExpression
+    - ParseIdentifierPrecededExpression() : IExpression
+    - ParseFunctionCall(functionName:string) : IExpression
+    - ParseVariableIdentifier() : IExpression
+    - ExpectDataTypeAndReturn() : DataType
+    - ExpectSemicolon() : void
+    - ExpectAndConsume(type:TokenType, lexeme:string) : void
+    - Expect(type:TokenType, lexeme:string) : void
+    - PeekMatchAndConsume(tokenTypes:TokenType[]) : bool
+    - PeekMatch(tokenTypes:TokenType[]) : bool
+    - {static} Match(token:Token, tokenTypes:TokenType[]) : bool
+    - Peek(i:int) : Token
+    - Consume() : Token
+    - EndOfFile() : bool
+    - Log(logType:string) : void
+}
+@enduml

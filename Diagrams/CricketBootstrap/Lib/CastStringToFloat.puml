@@ -1,0 +1,11 @@
+@startuml
+class CastStringToFloat <<static>> {
+    + {static} Link(interpreter:Interpreter) : void
+}
+class CastStringToFloatStatement {
+    + Interpret(environment:Cricket.Interpreter.Environment.Environment) : object
+    + Resolve(environment:Resolver.ResolverEnvironment) : object
+}
+CastStringToFloat +-- CastStringToFloatStatement
+IStatement <|-- CastStringToFloatStatement
+@enduml

@@ -1,0 +1,24 @@
+@startuml
+class BinaryExpression {
+    - <<readonly>> _left : IExpression
+    - <<readonly>> _right : IExpression
+    - <<readonly>> _type : ExpressionType
+    + BinaryExpression(left:IExpression, type:ExpressionType, right:IExpression)
+    + Interpret(environment:Environment.Environment) : object
+    + Resolve(environment:Resolver.ResolverEnvironment) : object
+    + Returns(environment:Resolver.ResolverEnvironment) : DataType
+}
+enum ExpressionType {
+    Addition,
+    Subtraction,
+    Multiplication,
+    Division,
+    Equal,
+    Greater,
+    Less,
+    GreaterEqual,
+    LessEqual,
+}
+IExpression <|-- BinaryExpression
+BinaryExpression +-- ExpressionType
+@enduml

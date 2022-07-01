@@ -1,0 +1,6 @@
+@startuml
+class ParserTest {
+    + SetCultureInfo() : void
+    + TestValue() : void
+}
+@enduml

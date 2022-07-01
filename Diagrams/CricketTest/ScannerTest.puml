@@ -1,0 +1,6 @@
+@startuml
+class ScannerTest {
+    + MathExprTest() : void
+    + RandomTest() : void
+}
+@enduml

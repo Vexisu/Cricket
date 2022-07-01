@@ -1,0 +1,11 @@
+@startuml
+class HttpRequestValue <<static>> {
+    + {static} Link(interpreter:Interpreter) : void
+}
+class HttpRequestValueStatement {
+    + Interpret(environment:Cricket.Interpreter.Environment.Environment) : object
+    + Resolve(environment:Resolver.ResolverEnvironment) : object
+}
+HttpRequestValue +-- HttpRequestValueStatement
+IStatement <|-- HttpRequestValueStatement
+@enduml

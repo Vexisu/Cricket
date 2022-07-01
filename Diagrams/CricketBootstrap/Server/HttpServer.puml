@@ -1,0 +1,8 @@
+@startuml
+class HttpServer {
+    - <<readonly>> _httpListener : HttpListener
+    - <<readonly>> _documents : Dictionary<string, DynamicDocument>
+    + HttpServer(documents:Dictionary<string, DynamicDocument>, address:string, port:short)
+    - <<async>> HandleIncomingRequests() : Task
+}
+@enduml

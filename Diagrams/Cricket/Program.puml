@@ -1,0 +1,7 @@
+@startuml
+class Program <<static>> {
+    - {static} _debug : bool
+    - {static} Main(args:string[]) : void
+    - {static} NoPathPresent() : void
+}
+@enduml

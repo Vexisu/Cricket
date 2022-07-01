@@ -1,0 +1,9 @@
+@startuml
+enum DataType {
+    String,
+    Integer,
+    Float,
+    Boolean,
+    Null,
+}
+@enduml

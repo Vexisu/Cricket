@@ -1,0 +1,10 @@
+@startuml
+class IfStatement {
+    - <<readonly>> _condition : IExpression
+    - <<readonly>> _statements : List<IStatement>
+    + IfStatement(condition:IExpression, statements:List<IStatement>)
+    + Interpret(environment:Environment.Environment) : object
+    + Resolve(environment:Resolver.ResolverEnvironment) : object
+}
+IStatement <|-- IfStatement
+@enduml

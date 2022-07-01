@@ -1,0 +1,8 @@
+@startuml
+class EnvironmentManager {
+    + EnvironmentsInterpreter : Dictionary<string, Interpreter> <<get>>
+    + EnvironmentManager()
+    + AddGetRequestValues(nameValueCollection:NameValueCollection) : void
+    + RemoveGetRequestValues(nameValueCollection:NameValueCollection) : void
+}
+@enduml

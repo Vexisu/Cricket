@@ -1,0 +1,31 @@
+@startuml
+class Resolver {
+    - <<readonly>> _statements : List<IStatement>
+    + Resolver(statements:List<IStatement>)
+    + Resolve() : void
+    + {static} CheckTypeIntegrity(name:string, present:DataType, required:DataType) : void
+}
+class ResolverEnvironment {
+    - <<readonly>> _functions : List<ResolverFunction>
+    - <<readonly>> _parent : ResolverEnvironment
+    - <<readonly>> _variables : Dictionary<string, DataType>
+    + ResolverEnvironment(parent:ResolverEnvironment)
+    + ResolverEnvironment()
+    + VariableExists(name:string) : bool
+    + VariableReturns(name:string) : DataType
+    + AddVariable(name:string, type:DataType) : void
+    + AddFunction(name:string, arguments:List<DataType>, returns:DataType) : void
+    + FunctionExists(name:string, arguments:List<DataType>) : bool
+    + FunctionReturns(name:string, arguments:List<DataType>) : DataType
+    + GetGlobal() : ResolverEnvironment
+}
+class ResolverFunction {
+    + ResolverFunction(name:string, arguments:List<DataType>, returns:DataType)
+    + Name : string <<get>>
+    + Arguments : List<DataType> <<get>>
+    + Returns : DataType <<get>>
+    + CompareArguments(arguments:List<DataType>) : bool
+}
+Resolver +-- ResolverEnvironment
+Resolver +-- ResolverFunction
+@enduml

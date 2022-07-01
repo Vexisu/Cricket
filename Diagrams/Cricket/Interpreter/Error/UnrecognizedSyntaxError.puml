@@ -1,0 +1,12 @@
+@startuml
+class UnrecognizedSyntaxError {
+    + UnrecognizedSyntaxError(sourceCode:string, line:int, index:int)
+    + UnrecognizedSyntaxError()
+    + UnrecognizedSyntaxError(message:string)
+    + UnrecognizedSyntaxError(message:string, innerException:Exception)
+    + SourceCode : string <<get>>
+    + Line : int <<get>>
+    + Index : int <<get>>
+}
+Exception <|-- UnrecognizedSyntaxError
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+class VariableExpression {
+    - <<readonly>> _name : string
+    + VariableExpression(name:string)
+    + Interpret(environment:Environment.Environment) : object
+    + Resolve(environment:Resolver.ResolverEnvironment) : object
+    + Returns(environment:Resolver.ResolverEnvironment) : DataType
+}
+IExpression <|-- VariableExpression
+@enduml

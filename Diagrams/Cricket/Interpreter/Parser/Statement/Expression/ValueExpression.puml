@@ -1,0 +1,11 @@
+@startuml
+class ValueExpression {
+    - <<readonly>> _dataType : DataType
+    - <<readonly>> _value : object
+    + ValueExpression(value:object, dataType:DataType)
+    + Interpret(environment:Environment.Environment) : object
+    + Resolve(environment:Resolver.ResolverEnvironment) : object
+    + Returns(environment:Resolver.ResolverEnvironment) : DataType
+}
+IExpression <|-- ValueExpression
+@enduml

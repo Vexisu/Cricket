@@ -1,0 +1,11 @@
+@startuml
+class CastStringToInteger <<static>> {
+    + {static} Link(interpreter:Interpreter) : void
+}
+class CastStringToIntegerStatement {
+    + Interpret(environment:Cricket.Interpreter.Environment.Environment) : object
+    + Resolve(environment:Resolver.ResolverEnvironment) : object
+}
+CastStringToInteger +-- CastStringToIntegerStatement
+IStatement <|-- CastStringToIntegerStatement
+@enduml

@@ -1,0 +1,6 @@
+@startuml
+interface IStatement {
+    + Interpret(environment:Environment.Environment) : object
+    + Resolve(environment:Resolver.ResolverEnvironment) : object
+}
+@enduml

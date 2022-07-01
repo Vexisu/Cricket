@@ -1,0 +1,6 @@
+@startuml
+class DisallowedSyntaxError {
+    + DisallowedSyntaxError(message:string)
+}
+Exception <|-- DisallowedSyntaxError
+@enduml

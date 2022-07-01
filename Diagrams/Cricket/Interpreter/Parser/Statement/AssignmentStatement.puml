@@ -1,0 +1,10 @@
+@startuml
+class AssignmentStatement {
+    - <<readonly>> _expression : IExpression
+    - <<readonly>> _name : string
+    + AssignmentStatement(expression:IExpression, name:string)
+    + Interpret(environment:Environment.Environment) : object
+    + Resolve(environment:Resolver.ResolverEnvironment) : object
+}
+IStatement <|-- AssignmentStatement
+@enduml

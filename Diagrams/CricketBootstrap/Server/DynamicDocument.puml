@@ -1,0 +1,13 @@
+@startuml
+class DynamicDocument {
+    - {static} <<readonly>> SearchRegex : Regex
+    - {static} <<readonly>> ReplacementRegex : Regex
+    - <<readonly>> _document : string
+    - <<readonly>> _searchMatches : MatchCollection
+    - <<readonly>> _replacementMatches : MatchCollection
+    - <<readonly>> _environmentManager : EnvironmentManager
+    + DynamicDocument(document:string, environmentManager:EnvironmentManager)
+    + Parse(nameValueCollection:NameValueCollection) : string
+    - Execute(command:string) : string
+}
+@enduml

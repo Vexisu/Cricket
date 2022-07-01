@@ -1,0 +1,17 @@
+@startuml
+class ReturnStatement {
+    - <<readonly>> _expression : IExpression
+    - _returnedType : DataType
+    + ReturnStatement(expression:IExpression)
+    + Interpret(environment:Environment.Environment) : object
+    + Resolve(environment:Resolver.ResolverEnvironment) : object
+}
+class HackyReturnException {
+    + HackyReturnException(value:object, type:DataType)
+    + Value : object <<get>>
+    + Type : DataType <<get>>
+}
+IStatement <|-- ReturnStatement
+ReturnStatement +-- HackyReturnException
+Exception <|-- HackyReturnException
+@enduml

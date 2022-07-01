@@ -1,0 +1,6 @@
+@startuml
+class ResolverError {
+    + ResolverError(message:string)
+}
+Exception <|-- ResolverError
+@enduml

@@ -1,0 +1,16 @@
+@startuml
+class Interpreter {
+    + {static} Debug : bool = false
+    + <<readonly>> Environment : Environment.Environment
+    - <<readonly>> _path : string
+    - <<readonly>> _externalFunctions : List<IStatement>
+    + Interpreter(path:string)
+    + StartInterpreter() : void
+    + AddExternalFunction(statement:FunctionStatement) : void
+    + CallFunction(name:string) : object
+    + {static} HandleException(exception:Exception) : void
+    - {static} HandleUnexpectedSyntaxError(error:UnexpectedSyntaxError) : void
+    - {static} HandleUnrecognizedSyntaxError(error:UnrecognizedSyntaxError) : void
+    - {static} HackDecimals() : void
+}
+@enduml

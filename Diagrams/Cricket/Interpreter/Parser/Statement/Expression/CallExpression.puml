@@ -1,0 +1,13 @@
+@startuml
+class CallExpression {
+    - <<readonly>> _arguments : List<IExpression>
+    - <<readonly>> _argumentsType : List<DataType>
+    - <<readonly>> _calledFunction : string
+    - _functionReturns : DataType
+    + CallExpression(calledFunction:string, arguments:List<IExpression>)
+    + Interpret(environment:Environment.Environment) : object
+    + Resolve(environment:Resolver.ResolverEnvironment) : object
+    + Returns(environment:Resolver.ResolverEnvironment) : DataType
+}
+IExpression <|-- CallExpression
+@enduml

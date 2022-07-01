@@ -1,0 +1,17 @@
+@startuml
+class Scanner {
+    - <<readonly>> _source : string[]
+    - <<readonly>> _tokens : List<Token>
+    - _index : int
+    - _line : int
+    + Scanner(source:string[])
+    + Tokenize() : List<Token>
+    - Consume() : char
+    - ConsumeNumeric(current:char) : void
+    - ConsumeString() : void
+    - ConsumeIdentifier(current:char) : string
+    - NewToken(tokenType:TokenType, lexeme:string) : void
+    - Peek() : char
+    - EndOfFile() : bool
+}
+@enduml

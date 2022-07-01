@@ -1,0 +1,9 @@
+@startuml
+class UnexpectedSyntaxError {
+    + UnexpectedSyntaxError(line:int, present:string, expected:string)
+    + Line : int <<get>>
+    + Expected : string <<get>>
+    + Present : string <<get>>
+}
+Exception <|-- UnexpectedSyntaxError
+@enduml
